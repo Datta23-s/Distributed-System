@@ -1,0 +1,6 @@
+Id":"t-107","driverId":"driver-3","zone":"Uptown","fare":15,"distance":2.8}
+{"tripId":"t-108","driverId":"driver-2","zone":"Uptown","fare":19.5,"distance":4.1}
+{"tripId":"t-109","driverId":"driver-3","zone":"Airport","fare":52,"distance":21}
+{"tripId":"t-110","driverId":"driver-1","zone":"Suburbs","fare":29,"distance":10.5}
+{"tripId":"t-111","driverId":"driver-2","zone":"Downtown","fare":21,"distance":4.2}
+{"tripId":"t-112","driverId":"driver-3","zone":"Downtown","fare":24,"distance":5}

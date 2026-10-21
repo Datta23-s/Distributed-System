@@ -1,0 +1,792 @@
+{
+  "trip_receipts_fleet.log": {
+    "filename": "trip_receipts_fleet.log",
+    "sizeBytes": 1003,
+    "chunkSize": 512,
+    "replicationFactor": 2,
+    "chunks": [
+      {
+        "chunkId": "blk_41f1675040",
+        "index": 0,
+        "sizeBytes": 512,
+        "replicas": [
+          "driver-1",
+          "driver-2"
+        ],
+        "checksum": "7fbfc5e713b82e52"
+      },
+      {
+        "chunkId": "blk_c538498f81",
+        "index": 1,
+        "sizeBytes": 491,
+        "replicas": [
+          "driver-2",
+          "driver-3"
+        ],
+        "checksum": "4df32058035e06b9"
+      }
+    ],
+    "createdAt": 1792039742422,
+    "updatedAt": 1792039742422
+  },
+  "trip_ride-caa96b19.log": {
+    "filename": "trip_ride-caa96b19.log",
+    "sizeBytes": 107,
+    "chunkSize": 512,
+    "replicationFactor": 2,
+    "chunks": [
+      {
+        "chunkId": "blk_079a48ccfe",
+        "index": 0,
+        "sizeBytes": 107,
+        "replicas": [
+          "driver-1",
+          "driver-2"
+        ],
+        "checksum": "b751a120f29807f5"
+      }
+    ],
+    "createdAt": 1791737105945,
+    "updatedAt": 1791737105945
+  },
+  "trip_ride-9fde9ed1.log": {
+    "filename": "trip_ride-9fde9ed1.log",
+    "sizeBytes": 107,
+    "chunkSize": 512,
+    "replicationFactor": 2,
+    "chunks": [
+      {
+        "chunkId": "blk_b858eb6608",
+        "index": 0,
+        "sizeBytes": 107,
+        "replicas": [
+          "driver-1",
+          "driver-2"
+        ],
+        "checksum": "530cfaa94568e41e"
+      }
+    ],
+    "createdAt": 1791741793385,
+    "updatedAt": 1791741793385
+  },
+  "trip_ride-57adf936.log": {
+    "filename": "trip_ride-57adf936.log",
+    "sizeBytes": 107,
+    "chunkSize": 512,
+    "replicationFactor": 2,
+    "chunks": [
+      {
+        "chunkId": "blk_d0852a4a75",
+        "index": 0,
+        "sizeBytes": 107,
+        "replicas": [
+          "driver-1",
+          "driver-2"
+        ],
+        "checksum": "b7695b5bee34e4b0"
+      }
+    ],
+    "createdAt": 1791810308380,
+    "updatedAt": 1791810308380
+  },
+  "trip_ride-f8c29efc.log": {
+    "filename": "trip_ride-f8c29efc.log",
+    "sizeBytes": 107,
+    "chunkSize": 512,
+    "replicationFactor": 2,
+    "chunks": [
+      {
+        "chunkId": "blk_7bad5b3871",
+        "index": 0,
+        "sizeBytes": 107,
+        "replicas": [
+          "driver-1",
+          "driver-2"
+        ],
+        "checksum": "3273a1881140fa4e"
+      }
+    ],
+    "createdAt": 1791810425160,
+    "updatedAt": 1791810425160
+  },
+  "test_file.log": {
+    "filename": "test_file.log",
+    "sizeBytes": 37,
+    "chunkSize": 512,
+    "replicationFactor": 2,
+    "chunks": [
+      {
+        "chunkId": "blk_8b1b4a2afd",
+        "index": 0,
+        "sizeBytes": 37,
+        "replicas": [
+          "driver-1",
+          "driver-2"
+        ],
+        "checksum": "4a5ae4b16372ec94"
+      }
+    ],
+    "createdAt": 1791811223141,
+    "updatedAt": 1791811223141
+  },
+  "trip_ride-a70540c1.log": {
+    "filename": "trip_ride-a70540c1.log",
+    "sizeBytes": 107,
+    "chunkSize": 512,
+    "replicationFactor": 2,
+    "chunks": [
+      {
+        "chunkId": "blk_31659223f6",
+        "index": 0,
+        "sizeBytes": 107,
+        "replicas": [
+          "driver-1",
+          "driver-2"
+        ],
+        "checksum": "17d2988bb165689b"
+      }
+    ],
+    "createdAt": 1791811056473,
+    "updatedAt": 1791811056473
+  },
+  "trip_ride-24888191.log": {
+    "filename": "trip_ride-24888191.log",
+    "sizeBytes": 107,
+    "chunkSize": 512,
+    "replicationFactor": 2,
+    "chunks": [
+      {
+        "chunkId": "blk_2826e0304f",
+        "index": 0,
+        "sizeBytes": 107,
+        "replicas": [
+          "driver-1",
+          "driver-2"
+        ],
+        "checksum": "67f321faa390852f"
+      }
+    ],
+    "createdAt": 1791811240138,
+    "updatedAt": 1791811240138
+  },
+  "trip_ride-2b636739.log": {
+    "filename": "trip_ride-2b636739.log",
+    "sizeBytes": 107,
+    "chunkSize": 512,
+    "replicationFactor": 2,
+    "chunks": [
+      {
+        "chunkId": "blk_dd2074a09a",
+        "index": 0,
+        "sizeBytes": 107,
+        "replicas": [
+          "driver-1",
+          "driver-2"
+        ],
+        "checksum": "4f4508b6231a4cda"
+      }
+    ],
+    "createdAt": 1791811578171,
+    "updatedAt": 1791811578171
+  },
+  "trip_ride-30823458.log": {
+    "filename": "trip_ride-30823458.log",
+    "sizeBytes": 107,
+    "chunkSize": 512,
+    "replicationFactor": 2,
+    "chunks": [
+      {
+        "chunkId": "blk_03801b1e92",
+        "index": 0,
+        "sizeBytes": 107,
+        "replicas": [
+          "driver-1",
+          "driver-2"
+        ],
+        "checksum": "91da52ac9fcd7b9d"
+      }
+    ],
+    "createdAt": 1791811687781,
+    "updatedAt": 1791811687781
+  },
+  "trip_ride-6f1b7cee.log": {
+    "filename": "trip_ride-6f1b7cee.log",
+    "sizeBytes": 107,
+    "chunkSize": 512,
+    "replicationFactor": 2,
+    "chunks": [
+      {
+        "chunkId": "blk_ad35cd5edd",
+        "index": 0,
+        "sizeBytes": 107,
+        "replicas": [
+          "driver-1",
+          "driver-2"
+        ],
+        "checksum": "616923413ec5e9ef"
+      }
+    ],
+    "createdAt": 1791812484970,
+    "updatedAt": 1791812484970
+  },
+  "trip_ride-c4bd52ef.log": {
+    "filename": "trip_ride-c4bd52ef.log",
+    "sizeBytes": 106,
+    "chunkSize": 512,
+    "replicationFactor": 2,
+    "chunks": [
+      {
+        "chunkId": "blk_4f89cf9111",
+        "index": 0,
+        "sizeBytes": 106,
+        "replicas": [
+          "driver-1",
+          "driver-2"
+        ],
+        "checksum": "8c7693e0ddca19d1"
+      }
+    ],
+    "createdAt": 1791814853882,
+    "updatedAt": 1791814853882
+  },
+  "trip_ride-4b9d5810.log": {
+    "filename": "trip_ride-4b9d5810.log",
+    "sizeBytes": 107,
+    "chunkSize": 512,
+    "replicationFactor": 2,
+    "chunks": [
+      {
+        "chunkId": "blk_4c947fabc9",
+        "index": 0,
+        "sizeBytes": 107,
+        "replicas": [
+          "driver-1",
+          "driver-2"
+        ],
+        "checksum": "2972e58d59ec1c19"
+      }
+    ],
+    "createdAt": 1791814872166,
+    "updatedAt": 1791814872166
+  },
+  "trip_ride-2f314844.log": {
+    "filename": "trip_ride-2f314844.log",
+    "sizeBytes": 106,
+    "chunkSize": 512,
+    "replicationFactor": 2,
+    "chunks": [
+      {
+        "chunkId": "blk_e4a3a250fe",
+        "index": 0,
+        "sizeBytes": 106,
+        "replicas": [
+          "driver-1",
+          "driver-2"
+        ],
+        "checksum": "95e25927c308c4c1"
+      }
+    ],
+    "createdAt": 1791814896508,
+    "updatedAt": 1791814896508
+  },
+  "trip_ride-5be73e92.log": {
+    "filename": "trip_ride-5be73e92.log",
+    "sizeBytes": 107,
+    "chunkSize": 512,
+    "replicationFactor": 2,
+    "chunks": [
+      {
+        "chunkId": "blk_445d7dd29f",
+        "index": 0,
+        "sizeBytes": 107,
+        "replicas": [
+          "driver-1",
+          "driver-2"
+        ],
+        "checksum": "ffc12757917837cf"
+      }
+    ],
+    "createdAt": 1791815082219,
+    "updatedAt": 1791815082219
+  },
+  "test_auto.log": {
+    "filename": "test_auto.log",
+    "sizeBytes": 12,
+    "chunkSize": 512,
+    "replicationFactor": 2,
+    "chunks": [
+      {
+        "chunkId": "blk_4bf468df01",
+        "index": 0,
+        "sizeBytes": 12,
+        "replicas": [
+          "driver-1",
+          "driver-2"
+        ],
+        "checksum": "6ae8a75555209fd6"
+      }
+    ],
+    "createdAt": 1791821630344,
+    "updatedAt": 1791821630344
+  },
+  "trip_ride-34b2364f.log": {
+    "filename": "trip_ride-34b2364f.log",
+    "sizeBytes": 107,
+    "chunkSize": 512,
+    "replicationFactor": 2,
+    "chunks": [
+      {
+        "chunkId": "blk_96f62d1bd2",
+        "index": 0,
+        "sizeBytes": 107,
+        "replicas": [
+          "driver-1",
+          "driver-2"
+        ],
+        "checksum": "090be82708c8a9cd"
+      }
+    ],
+    "createdAt": 1791815594796,
+    "updatedAt": 1791815594796
+  },
+  "trip_ride-d344f905.log": {
+    "filename": "trip_ride-d344f905.log",
+    "sizeBytes": 107,
+    "chunkSize": 512,
+    "replicationFactor": 2,
+    "chunks": [
+      {
+        "chunkId": "blk_7b2b58a28a",
+        "index": 0,
+        "sizeBytes": 107,
+        "replicas": [
+          "driver-1",
+          "driver-2"
+        ],
+        "checksum": "dd6720a55310195a"
+      }
+    ],
+    "createdAt": 1791815663969,
+    "updatedAt": 1791815663969
+  },
+  "trip_ride-213a8915.log": {
+    "filename": "trip_ride-213a8915.log",
+    "sizeBytes": 107,
+    "chunkSize": 512,
+    "replicationFactor": 2,
+    "chunks": [
+      {
+        "chunkId": "blk_5b4402a44b",
+        "index": 0,
+        "sizeBytes": 107,
+        "replicas": [
+          "driver-1",
+          "driver-2"
+        ],
+        "checksum": "23aad7ae515a7cd3"
+      }
+    ],
+    "createdAt": 1791817104171,
+    "updatedAt": 1791817104171
+  },
+  "trip_ride-11f115c6.log": {
+    "filename": "trip_ride-11f115c6.log",
+    "sizeBytes": 107,
+    "chunkSize": 512,
+    "replicationFactor": 2,
+    "chunks": [
+      {
+        "chunkId": "blk_4db67f2e87",
+        "index": 0,
+        "sizeBytes": 107,
+        "replicas": [
+          "driver-1",
+          "driver-2"
+        ],
+        "checksum": "21665861840772d3"
+      }
+    ],
+    "createdAt": 1791820123691,
+    "updatedAt": 1791820123691
+  },
+  "enterprise_sync_test.log": {
+    "filename": "enterprise_sync_test.log",
+    "sizeBytes": 17,
+    "chunkSize": 512,
+    "replicationFactor": 2,
+    "chunks": [
+      {
+        "chunkId": "blk_990bb2c3b6",
+        "index": 0,
+        "sizeBytes": 17,
+        "replicas": [
+          "driver-1",
+          "driver-2"
+        ],
+        "checksum": "6311b224f3dcedcd"
+      }
+    ],
+    "createdAt": 1791821620061,
+    "updatedAt": 1791821620061
+  },
+  "trip_ride-2c529317.log": {
+    "filename": "trip_ride-2c529317.log",
+    "sizeBytes": 107,
+    "chunkSize": 512,
+    "replicationFactor": 2,
+    "chunks": [
+      {
+        "chunkId": "blk_52eef9d0de",
+        "index": 0,
+        "sizeBytes": 107,
+        "replicas": [
+          "driver-1",
+          "driver-2"
+        ],
+        "checksum": "c2b203f977d92e56"
+      }
+    ],
+    "createdAt": 1791821475666,
+    "updatedAt": 1791821475666
+  },
+  "trip_sync-1791821620152.log": {
+    "filename": "trip_sync-1791821620152.log",
+    "sizeBytes": 129,
+    "chunkSize": 512,
+    "replicationFactor": 2,
+    "chunks": [
+      {
+        "chunkId": "blk_c7bc9d99a7",
+        "index": 0,
+        "sizeBytes": 129,
+        "replicas": [
+          "driver-1",
+          "driver-2"
+        ],
+        "checksum": "899352cfd82d3850"
+      }
+    ],
+    "createdAt": 1791821620174,
+    "updatedAt": 1791821620174
+  },
+  "trip_ride-9117183e.log": {
+    "filename": "trip_ride-9117183e.log",
+    "sizeBytes": 107,
+    "chunkSize": 512,
+    "replicationFactor": 2,
+    "chunks": [
+      {
+        "chunkId": "blk_758531c58a",
+        "index": 0,
+        "sizeBytes": 107,
+        "replicas": [
+          "driver-1",
+          "driver-2"
+        ],
+        "checksum": "9708ce39d2327879"
+      }
+    ],
+    "createdAt": 1791821629177,
+    "updatedAt": 1791821629177
+  },
+  "trip_ride-263335c1.log": {
+    "filename": "trip_ride-263335c1.log",
+    "sizeBytes": 103,
+    "chunkSize": 512,
+    "replicationFactor": 2,
+    "chunks": [
+      {
+        "chunkId": "blk_de68c6399b",
+        "index": 0,
+        "sizeBytes": 103,
+        "replicas": [
+          "driver-1",
+          "driver-2"
+        ],
+        "checksum": "4b482f3637344d59"
+      }
+    ],
+    "createdAt": 1791821645813,
+    "updatedAt": 1791821645813
+  },
+  "sync_audit_1791821677932.log": {
+    "filename": "sync_audit_1791821677932.log",
+    "sizeBytes": 82,
+    "chunkSize": 512,
+    "replicationFactor": 2,
+    "chunks": [
+      {
+        "chunkId": "blk_4500ac26d3",
+        "index": 0,
+        "sizeBytes": 82,
+        "replicas": [
+          "driver-1",
+          "driver-2"
+        ],
+        "checksum": "c89440433c2ab9e0"
+      }
+    ],
+    "createdAt": 1791821677954,
+    "updatedAt": 1791821677954
+  },
+  "trip_ride-04890c3f.log": {
+    "filename": "trip_ride-04890c3f.log",
+    "sizeBytes": 107,
+    "chunkSize": 512,
+    "replicationFactor": 2,
+    "chunks": [
+      {
+        "chunkId": "blk_05fa7d5028",
+        "index": 0,
+        "sizeBytes": 107,
+        "replicas": [
+          "driver-1",
+          "driver-2"
+        ],
+        "checksum": "c1235e6fb3401ca3"
+      }
+    ],
+    "createdAt": 1791821687708,
+    "updatedAt": 1791821687708
+  },
+  "sync_audit_1791821707054.log": {
+    "filename": "sync_audit_1791821707054.log",
+    "sizeBytes": 82,
+    "chunkSize": 512,
+    "replicationFactor": 2,
+    "chunks": [
+      {
+        "chunkId": "blk_69c17268d5",
+        "index": 0,
+        "sizeBytes": 82,
+        "replicas": [
+          "driver-1",
+          "driver-2"
+        ],
+        "checksum": "c5025c173901fd9f"
+      }
+    ],
+    "createdAt": 1791821707077,
+    "updatedAt": 1791821707077
+  },
+  "trip_ride-4778a68d.log": {
+    "filename": "trip_ride-4778a68d.log",
+    "sizeBytes": 107,
+    "chunkSize": 512,
+    "replicationFactor": 2,
+    "chunks": [
+      {
+        "chunkId": "blk_11d877cf40",
+        "index": 0,
+        "sizeBytes": 107,
+        "replicas": [
+          "driver-1",
+          "driver-2"
+        ],
+        "checksum": "2920acd2458eef02"
+      }
+    ],
+    "createdAt": 1791821719996,
+    "updatedAt": 1791821719996
+  },
+  "sync_audit_1791826176110.log": {
+    "filename": "sync_audit_1791826176110.log",
+    "sizeBytes": 82,
+    "chunkSize": 512,
+    "replicationFactor": 2,
+    "chunks": [
+      {
+        "chunkId": "blk_9f243907c2",
+        "index": 0,
+        "sizeBytes": 82,
+        "replicas": [
+          "driver-1",
+          "driver-2"
+        ],
+        "checksum": "e89209bc44d246a1"
+      }
+    ],
+    "createdAt": 1791826176145,
+    "updatedAt": 1791826176145
+  },
+  "trip_ride-518c39b9.log": {
+    "filename": "trip_ride-518c39b9.log",
+    "sizeBytes": 107,
+    "chunkSize": 512,
+    "replicationFactor": 2,
+    "chunks": [
+      {
+        "chunkId": "blk_f2cdd5a24a",
+        "index": 0,
+        "sizeBytes": 107,
+        "replicas": [
+          "driver-1",
+          "driver-2"
+        ],
+        "checksum": "a0de0832a9e7c26e"
+      }
+    ],
+    "createdAt": 1791826190295,
+    "updatedAt": 1791826190295
+  },
+  "sync_audit_1791868201397.log": {
+    "filename": "sync_audit_1791868201397.log",
+    "sizeBytes": 82,
+    "chunkSize": 512,
+    "replicationFactor": 2,
+    "chunks": [
+      {
+        "chunkId": "blk_681a7a8dca",
+        "index": 0,
+        "sizeBytes": 82,
+        "replicas": [
+          "driver-1",
+          "driver-2"
+        ],
+        "checksum": "5c6a8c6e95b42966"
+      }
+    ],
+    "createdAt": 1791868201426,
+    "updatedAt": 1791868201426
+  },
+  "trip_ride-2452dbc1.log": {
+    "filename": "trip_ride-2452dbc1.log",
+    "sizeBytes": 107,
+    "chunkSize": 512,
+    "replicationFactor": 2,
+    "chunks": [
+      {
+        "chunkId": "blk_16afe9891d",
+        "index": 0,
+        "sizeBytes": 107,
+        "replicas": [
+          "driver-1",
+          "driver-2"
+        ],
+        "checksum": "13ed15bb8f025cff"
+      }
+    ],
+    "createdAt": 1791868210695,
+    "updatedAt": 1791868210695
+  },
+  "sync_audit_1791868238362.log": {
+    "filename": "sync_audit_1791868238362.log",
+    "sizeBytes": 82,
+    "chunkSize": 512,
+    "replicationFactor": 2,
+    "chunks": [
+      {
+        "chunkId": "blk_a6a8934514",
+        "index": 0,
+        "sizeBytes": 82,
+        "replicas": [
+          "driver-1",
+          "driver-2"
+        ],
+        "checksum": "5de17fbd6728652b"
+      }
+    ],
+    "createdAt": 1791868238489,
+    "updatedAt": 1791868238489
+  },
+  "trip_ride-77c254fe.log": {
+    "filename": "trip_ride-77c254fe.log",
+    "sizeBytes": 107,
+    "chunkSize": 512,
+    "replicationFactor": 2,
+    "chunks": [
+      {
+        "chunkId": "blk_129dfd41c2",
+        "index": 0,
+        "sizeBytes": 107,
+        "replicas": [
+          "driver-1",
+          "driver-2"
+        ],
+        "checksum": "1682b95bb82886a4"
+      }
+    ],
+    "createdAt": 1791868250229,
+    "updatedAt": 1791868250229
+  },
+  "sync_audit_1791868256182.log": {
+    "filename": "sync_audit_1791868256182.log",
+    "sizeBytes": 82,
+    "chunkSize": 512,
+    "replicationFactor": 2,
+    "chunks": [
+      {
+        "chunkId": "blk_822566cd72",
+        "index": 0,
+        "sizeBytes": 82,
+        "replicas": [
+          "driver-1",
+          "driver-2"
+        ],
+        "checksum": "c0bfed2af2496cc3"
+      }
+    ],
+    "createdAt": 1791868256211,
+    "updatedAt": 1791868256211
+  },
+  "trip_ride-98721f66.log": {
+    "filename": "trip_ride-98721f66.log",
+    "sizeBytes": 107,
+    "chunkSize": 512,
+    "replicationFactor": 2,
+    "chunks": [
+      {
+        "chunkId": "blk_4ab08aadd8",
+        "index": 0,
+        "sizeBytes": 107,
+        "replicas": [
+          "driver-1",
+          "driver-2"
+        ],
+        "checksum": "068efc5cb1386b03"
+      }
+    ],
+    "createdAt": 1791868266607,
+    "updatedAt": 1791868266607
+  },
+  "trip_ride-c9b08173.log": {
+    "filename": "trip_ride-c9b08173.log",
+    "sizeBytes": 107,
+    "chunkSize": 512,
+    "replicationFactor": 2,
+    "chunks": [
+      {
+        "chunkId": "blk_68b9ddea3e",
+        "index": 0,
+        "sizeBytes": 107,
+        "replicas": [
+          "driver-1",
+          "driver-2"
+        ],
+        "checksum": "a9807aff05676d9f"
+      }
+    ],
+    "createdAt": 1791868271457,
+    "updatedAt": 1791868271457
+  },
+  "trip_ride-bf291656.log": {
+    "filename": "trip_ride-bf291656.log",
+    "sizeBytes": 106,
+    "chunkSize": 512,
+    "replicationFactor": 2,
+    "chunks": [
+      {
+        "chunkId": "blk_b591289b21",
+        "index": 0,
+        "sizeBytes": 106,
+        "replicas": [
+          "driver-1",
+          "driver-2"
+        ],
+        "checksum": "fa9516cf06faa2bd"
+      }
+    ],
+    "createdAt": 1792041096813,
+    "updatedAt": 1792041096813
+  }
+}

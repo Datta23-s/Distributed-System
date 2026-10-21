@@ -1,0 +1,53 @@
+# ==============================================================================
+# Kubernetes Service & LoadBalancer Manifests: UrbanPulse Dispatch
+# ==============================================================================
+apiVersion: v1
+kind: Service
+metadata:
+  name: urbanpulse-gateway-service
+  labels:
+    app.kubernetes.io/name: urbanpulse-gateway
+spec:
+  type: LoadBalancer
+  selector:
+    app: urbanpulse-gateway
+  ports:
+    - name: http
+      port: 80
+      targetPort: 5000
+      protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: urbanpulse-coordinator-service
+spec:
+  type: ClusterIP
+  selector:
+    app: urbanpulse-coordinator
+  ports:
+    - name: rpc
+      port: 9000
+      targetPort: 9000
+    - name: broker
+      port: 9100
+      targetPort: 9100
+    - name: control
+      port: 9030
+      targetPort: 9030
+    - name: namenode
+      port: 9200
+      targetPort: 9200
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: urbanpulse-datanode-headless
+spec:
+  clusterIP: None
+  selector:
+    app: urbanpulse-driver
+  ports:
+    - name: datanode-tcp
+      port: 9301
+      targetPort: 9301

@@ -1,0 +1,12 @@
+node_modules/
+package-lock.json
+data/test_dfs/
+data/dfs/
+__pycache__/
+*.pyc
+.env
+.DS_Store
+Thumbs.db
+*.log
+npm-debug.log*
+.sf/

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UrbanPulse Mission Control | Enterprise Mobility & Distributed Cloud Platform</title>
+  <link rel="stylesheet" href="/css/style.css?v=9">
+  
+  <!-- React 18 & ReactDOM via CDN (Zero build-step setup) -->
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  
+  <!-- Babel Standalone for direct in-browser JSX parsing -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body>
+  <div id="root"></div>
+
+  <!-- Load React Components with Babel JSX translation -->
+  <script type="text/babel" src="/js/CityMap.jsx?v=11"></script>
+  <script type="text/babel" src="/js/PacketFlow.jsx?v=11"></script>
+  <script type="text/babel" src="/js/WebRTCModal.jsx?v=11"></script>
+  <script type="text/babel" src="/js/RidePipeline.jsx?v=11"></script>
+  <script type="text/babel" src="/js/LiveActivityFeed.jsx?v=11"></script>
+  <script type="text/babel" src="/js/GuidedDemoTour.jsx?v=11"></script>
+  <script type="text/babel" src="/js/Unit3Sync.jsx?v=11"></script>
+  <script type="text/babel" src="/js/Unit4Paradigms.jsx?v=11"></script>
+  <script type="text/babel" src="/js/AdvancedSystems.jsx?v=11"></script>
+  <script type="text/babel" src="/js/SyllabusGuide.jsx?v=11"></script>
+  <script type="text/babel" src="/js/App.jsx?v=11"></script>
+
+  <!-- Mount React App -->
+  <script type="text/babel">
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+  </script>
+</body>
+</html>

@@ -1,0 +1,125 @@
+# ==============================================================================
+# UrbanPulse Dispatch - Docker Compose Multi-Node Deployment Topology
+# Distributed Ride-Sharing Simulator (Distributed Systems FA-1)
+# ==============================================================================
+version: '3.8'
+
+services:
+  # 1. Primary Coordinator (RPC Skeleton, MOM Broker, NameNode)
+  coordinator:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
+    container_name: urbanpulse-coordinator
+    command: node nodes/coordinator.js
+    ports:
+      - "9000:9000"   # RPC Server Skeleton
+      - "9100:9100"   # MOM Broker Server
+      - "9030:9030"   # Control Channel TCP
+      - "9200:9200"   # Mini-HDFS NameNode
+    volumes:
+      - ../data/namenode:/app/data/namenode
+    networks:
+      fleet_net:
+        ipv4_address: 172.28.0.10
+
+  # 2. Driver 1 Node (P2P Gossip, DataNode 1, Mutex/Election Node)
+  driver-1:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
+    container_name: urbanpulse-driver-1
+    command: node nodes/driver.js driver-1 9021 20 30 9022 9023
+    ports:
+      - "9021:9021/udp" # P2P UDP Gossip
+      - "9031:9031"     # Control TCP
+      - "9041:9041/udp" # Beacon UDP
+      - "9301:9301"     # Mini-HDFS DataNode 1
+    volumes:
+      - ../data/driver-1:/app/data/driver-1
+    depends_on:
+      - coordinator
+    networks:
+      fleet_net:
+        ipv4_address: 172.28.0.21
+
+  # 3. Driver 2 Node (P2P Gossip, DataNode 2, Mutex/Election Node)
+  driver-2:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
+    container_name: urbanpulse-driver-2
+    command: node nodes/driver.js driver-2 9022 50 60 9021 9023
+    ports:
+      - "9022:9022/udp" # P2P UDP Gossip
+      - "9032:9032"     # Control TCP
+      - "9042:9042/udp" # Beacon UDP
+      - "9302:9302"     # Mini-HDFS DataNode 2
+    volumes:
+      - ../data/driver-2:/app/data/driver-2
+    depends_on:
+      - coordinator
+    networks:
+      fleet_net:
+        ipv4_address: 172.28.0.22
+
+  # 4. Driver 3 Node (P2P Gossip, DataNode 3, Mutex/Election Node)
+  driver-3:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
+    container_name: urbanpulse-driver-3
+    command: node nodes/driver.js driver-3 9023 80 40 9021 9022
+    ports:
+      - "9023:9023/udp" # P2P UDP Gossip
+      - "9033:9033"     # Control TCP
+      - "9043:9043/udp" # Beacon UDP
+      - "9303:9303"     # Mini-HDFS DataNode 3
+    volumes:
+      - ../data/driver-3:/app/data/driver-3
+    depends_on:
+      - coordinator
+    networks:
+      fleet_net:
+        ipv4_address: 172.28.0.23
+
+  # 5. Serverless FaaS Runtime
+  serverless-runtime:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
+    container_name: urbanpulse-serverless
+    command: node services/serverless/serverlessRuntime.js
+    ports:
+      - "9400:9400"
+    depends_on:
+      - coordinator
+    networks:
+      fleet_net:
+        ipv4_address: 172.28.0.40
+
+  # 6. Express Gateway & React UI Dashboard (with Load Balancer)
+  gateway:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
+    container_name: urbanpulse-gateway
+    command: node server.js
+    ports:
+      - "5000:5000"
+    depends_on:
+      - coordinator
+      - driver-1
+      - driver-2
+      - driver-3
+      - serverless-runtime
+    networks:
+      fleet_net:
+        ipv4_address: 172.28.0.50
+
+networks:
+  fleet_net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.28.0.0/16

@@ -1,0 +1,32 @@
+{
+  "name": "distributed-rideshare-simulator",
+  "version": "1.0.0",
+  "description": "Distributed Ride-Sharing Simulator (Uber Clone) demonstrating Units 1 & 2 Distributed Systems concepts",
+  "main": "server.js",
+  "scripts": {
+    "start": "node start.js",
+    "server": "node server.js",
+    "coordinator": "node nodes/coordinator.js",
+    "driver1": "node nodes/driver.js driver-1 9021 20 30 9022 9023",
+    "driver2": "node nodes/driver.js driver-2 9022 50 60 9021 9023",
+    "driver3": "node nodes/driver.js driver-3 9023 80 40 9021 9022",
+    "customer": "node nodes/customer.js",
+    "test": "node test/test_distributed.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.6",
+    "express": "^4.22.2",
+    "ws": "^8.21.3"
+  },
+  "keywords": [
+    "distributed-systems",
+    "rpc",
+    "mom",
+    "p2p",
+    "webrtc",
+    "fault-tolerance",
+    "heartbeat"
+  ],
+  "author": "",
+  "license": "ISC"
+}
