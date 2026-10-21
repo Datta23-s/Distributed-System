@@ -1,4 +1,3 @@
-in imkmkh it shoiu lkhi  jbhfv ihu nj ug
 const { ServiceRegistry } = require('../middleware/naming');
 const { MessageBrokerClient } = require('../middleware/broker');
 const { P2PNode } = require('../middleware/p2pMesh');
