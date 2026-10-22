@@ -74,6 +74,30 @@ app.use((req, res, next) => {
 // Section 13.19: JWT Authentication & Role-Based Access Control
 app.use(authManager.authenticate);
 
+// ============================================================================
+// URBANPULSE DISPATCH PRODUCTION API (v1) - Pune, Maharashtra
+// ============================================================================
+const socketManager = require('./services/socketManager');
+socketManager.attach(wss);
+
+const v1AuthRoutes = require('./api/v1/authRoutes');
+const v1MapRoutes = require('./api/v1/mapRoutes');
+const v1FareRoutes = require('./api/v1/fareRoutes');
+const v1CustomerRoutes = require('./api/v1/customerRoutes');
+const v1RideRoutes = require('./api/v1/rideRoutes');
+const v1DriverRoutes = require('./api/v1/driverRoutes');
+const v1PaymentRoutes = require('./api/v1/paymentRoutes');
+const v1AdminRoutes = require('./api/v1/adminRoutes');
+
+app.use('/api/v1/auth', v1AuthRoutes);
+app.use('/api/v1/maps', v1MapRoutes);
+app.use('/api/v1/fares', v1FareRoutes);
+app.use('/api/v1/customer', v1CustomerRoutes);
+app.use('/api/v1/rides', v1RideRoutes);
+app.use('/api/v1/driver', v1DriverRoutes);
+app.use('/api/v1/payments', v1PaymentRoutes);
+app.use('/api/v1/admin', v1AdminRoutes);
+
 const PORT = process.env.PORT || 5000;
 const registry = new ServiceRegistry();
 

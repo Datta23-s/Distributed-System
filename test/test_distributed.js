@@ -825,14 +825,13 @@ async function runTests() {
   console.log('▶ Test 24: Event Sourcing & CQRS Architecture with Time-Travel Replay');
   const eventStore = new EventStore(null, 100);
 
-  const evtT0 = Date.now();
-  await eventStore.append('RIDE_REQUESTED', 'ride-777', { customerId: 'cust-amy', pickup: [10, 10], dropoff: [30, 30] });
-  await new Promise(r => setTimeout(r, 10));
-  const evtT1 = Date.now();
+  const evt1 = await eventStore.append('RIDE_REQUESTED', 'ride-777', { customerId: 'cust-amy', pickup: [10, 10], dropoff: [30, 30] });
+  await new Promise(r => setTimeout(r, 25));
+  const evtT1 = evt1.timestamp;
 
-  await eventStore.append('DRIVER_DISPATCHED', 'ride-777', { driverId: 'driver-1', fare: 28.50 });
-  await new Promise(r => setTimeout(r, 10));
-  const evtT2 = Date.now();
+  const evt2 = await eventStore.append('DRIVER_DISPATCHED', 'ride-777', { driverId: 'driver-1', fare: 28.50 });
+  await new Promise(r => setTimeout(r, 25));
+  const evtT2 = evt2.timestamp;
 
   await eventStore.append('TRIP_COMPLETED', 'ride-777', { driverId: 'driver-1', fare: 28.50, zone: 'Downtown' });
 

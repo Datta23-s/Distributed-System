@@ -1,0 +1,250 @@
+// Prisma Schema for UrbanPulse Dispatch
+// Production-oriented Ride-Hailing Platform (Pune, MH)
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             String           @id @default(uuid())
+  email          String           @unique
+  phone          String?          @unique
+  name           String
+  passwordHash   String
+  role           String           @default("CUSTOMER") // CUSTOMER, DRIVER, ADMIN
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  
+  customerProfile CustomerProfile?
+  driverProfile   DriverProfile?
+  savedPlaces     SavedPlace[]
+  ridesAsCustomer Ride[]          @relation("CustomerRides")
+  supportTickets  SupportTicket[]
+  auditLogs       AuditLog[]      @relation("UserAuditLogs")
+}
+
+model CustomerProfile {
+  id                    String   @id @default(uuid())
+  userId                String   @unique
+  user                  User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  emergencyContactName  String?
+  emergencyContactPhone String?
+  rating                Float    @default(5.0)
+  totalRides            Int      @default(0)
+  createdAt             DateTime @default(now())
+}
+
+model DriverProfile {
+  id                 String           @id @default(uuid())
+  userId             String           @unique
+  user               User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  licenseNumber      String           @unique
+  status             String           @default("OFFLINE") // OFFLINE, AVAILABLE, RESERVED, ON_TRIP
+  rating             Float            @default(5.0)
+  totalTrips         Int              @default(0)
+  totalEarnings      Float            @default(0.0) // In INR ₹
+  latitude           Float?           @default(18.5204) // Pune default
+  longitude          Float?           @default(73.8567)
+  lastLocationUpdate DateTime?
+  createdAt          DateTime         @default(now())
+
+  vehicles           Vehicle[]
+  ridesAsDriver      Ride[]           @relation("DriverRides")
+  assignments        RideAssignment[]
+  locationHistory    DriverLocation[]
+}
+
+model Vehicle {
+  id           String        @id @default(uuid())
+  driverId     String
+  driver       DriverProfile @relation(fields: [driverId], references: [id], onDelete: Cascade)
+  category     String        @default("ECONOMY") // BIKE, AUTO, ECONOMY, PREMIUM
+  make         String
+  model        String
+  year         Int
+  licensePlate String        @unique
+  color        String
+  capacity     Int           @default(4)
+  isApproved   Boolean       @default(true)
+  createdAt    DateTime      @default(now())
+}
+
+model SavedPlace {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  label     String   // Home, Work, Gym, Airport, etc.
+  address   String
+  latitude  Float
+  longitude Float
+  createdAt DateTime @default(now())
+}
+
+model FareConfiguration {
+  id              String   @id @default(uuid())
+  category        String   @unique // BIKE, AUTO, ECONOMY, PREMIUM
+  baseFare        Float    // Base fare in INR
+  perKmRate       Float    // Per km in INR
+  perMinuteRate   Float    // Per minute in INR
+  minimumFare     Float    // Minimum fare threshold
+  cancellationFee Float    // Cancellation penalty
+  surgeMultiplier Float    @default(1.0)
+  isActive        Boolean  @default(true)
+  currency        String   @default("INR")
+  updatedAt       DateTime @updatedAt
+}
+
+model FareQuote {
+  id              String   @id @default(uuid())
+  customerId      String?
+  pickupAddress   String
+  pickupLat       Float
+  pickupLng       Float
+  destAddress     String
+  destLat         Float
+  destLng         Float
+  distanceKm      Float
+  durationMinutes Int
+  category        String
+  baseFare        Float
+  distanceFare    Float
+  timeFare        Float
+  surgeMultiplier Float    @default(1.0)
+  totalFare       Float
+  currency        String   @default("INR")
+  expiresAt       DateTime
+  createdAt       DateTime @default(now())
+}
+
+model Ride {
+  id                 String           @id @default(uuid())
+  rideNumber         String           @unique
+  customerId         String
+  customer           User             @relation("CustomerRides", fields: [customerId], references: [id])
+  driverId           String?
+  driver             DriverProfile?   @relation("DriverRides", fields: [driverId], references: [id])
+  vehicleCategory    String           @default("ECONOMY") // BIKE, AUTO, ECONOMY, PREMIUM
+  
+  status             String           @default("REQUESTED") 
+  // State machine: REQUESTED -> SEARCHING -> DRIVER_ASSIGNED -> DRIVER_ARRIVING -> DRIVER_ARRIVED -> IN_PROGRESS -> COMPLETED
+  // Terminal/Alternate: CANCELLED, NO_DRIVER_AVAILABLE
+  
+  pickupAddress      String
+  pickupLat          Float
+  pickupLng          Float
+  destAddress        String
+  destLat            Float
+  destLng            Float
+  distanceKm         Float
+  durationMinutes    Int
+  estimatedFare      Float
+  finalFare          Float?
+  currency           String           @default("INR")
+  tripPin            String           // 4-digit verification code
+  cancellationReason String?
+  cancelledBy        String?          // CUSTOMER, DRIVER, SYSTEM
+  startTime          DateTime?
+  endTime            DateTime?
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
+
+  assignments        RideAssignment[]
+  statusEvents       RideStatusEvent[]
+  payments           Payment[]
+  ratings            Rating[]
+  supportTickets     SupportTicket[]
+}
+
+model RideAssignment {
+  id          String        @id @default(uuid())
+  rideId      String
+  ride        Ride          @relation(fields: [rideId], references: [id], onDelete: Cascade)
+  driverId    String
+  driver      DriverProfile @relation(fields: [driverId], references: [id], onDelete: Cascade)
+  status      String        @default("OFFERED") // OFFERED, ACCEPTED, REJECTED, TIMED_OUT
+  offeredAt   DateTime      @default(now())
+  respondedAt DateTime?
+}
+
+model RideStatusEvent {
+  id        String   @id @default(uuid())
+  rideId    String
+  ride      Ride     @relation(fields: [rideId], references: [id], onDelete: Cascade)
+  status    String
+  note      String?
+  timestamp DateTime @default(now())
+}
+
+model DriverLocation {
+  id         String        @id @default(uuid())
+  driverId   String
+  driver     DriverProfile @relation(fields: [driverId], references: [id], onDelete: Cascade)
+  latitude   Float
+  longitude  Float
+  heading    Float?        @default(0.0)
+  speed      Float?        @default(0.0)
+  recordedAt DateTime      @default(now())
+}
+
+model Payment {
+  id             String    @id @default(uuid())
+  rideId         String
+  ride           Ride      @relation(fields: [rideId], references: [id], onDelete: Cascade)
+  amount         Float
+  currency       String    @default("INR")
+  method         String    @default("CASH") // CASH, SANDBOX_RAZORPAY, SANDBOX_CARD
+  status         String    @default("PENDING") // PENDING, COMPLETED, FAILED, REFUNDED
+  transactionRef String?   @unique
+  paidAt         DateTime?
+  createdAt      DateTime  @default(now())
+}
+
+model Rating {
+  id        String   @id @default(uuid())
+  rideId    String
+  ride      Ride     @relation(fields: [rideId], references: [id], onDelete: Cascade)
+  raterRole String   // CUSTOMER or DRIVER
+  score     Int      // 1 to 5
+  feedback  String?
+  createdAt DateTime @default(now())
+}
+
+model SupportTicket {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  rideId    String?
+  ride      Ride?    @relation(fields: [rideId], references: [id])
+  category  String   // FARE_ISSUE, LOST_ITEM, SAFETY_CONCERN, DRIVER_BEHAVIOR, APP_BUG
+  subject   String
+  message   String
+  status    String   @default("OPEN") // OPEN, IN_REVIEW, RESOLVED, CLOSED
+  createdAt DateTime @default(now())
+}
+
+model AuditLog {
+  id         String   @id @default(uuid())
+  actorId    String?
+  actor      User?    @relation("UserAuditLogs", fields: [actorId], references: [id])
+  action     String
+  targetType String?
+  targetId   String?
+  details    String?
+  ipAddress  String?
+  createdAt  DateTime @default(now())
+}
+
+model IdempotencyRecord {
+  id             String   @id @default(uuid())
+  idempotencyKey String   @unique
+  endpoint       String
+  responseCode   Int
+  responseBody   String
+  expiresAt      DateTime
+  createdAt      DateTime @default(now())
+}

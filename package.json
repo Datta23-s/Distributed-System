@@ -11,11 +11,18 @@
     "driver2": "node nodes/driver.js driver-2 9022 50 60 9021 9023",
     "driver3": "node nodes/driver.js driver-3 9023 80 40 9021 9022",
     "customer": "node nodes/customer.js",
-    "test": "node test/test_distributed.js"
+    "test": "node test/test_distributed.js",
+    "test:api": "node test/test_api_v1.js",
+    "test:all": "node test/test_distributed.js && node test/test_api_v1.js",
+    "seed": "node prisma/seed.js",
+    "db:push": "npx prisma db push"
   },
   "dependencies": {
+    "@prisma/client": "^5.22.0",
+    "bcryptjs": "^3.0.3",
     "cors": "^2.8.6",
     "express": "^4.22.2",
+    "prisma": "^5.22.0",
     "ws": "^8.21.3"
   },
   "keywords": [

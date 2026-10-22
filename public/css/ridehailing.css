@@ -1,0 +1,599 @@
+/* UrbanPulse Dispatch — Production Uber-Style Ride-Hailing Styling */
+/* Pune, Maharashtra Operating Area */
+
+:root {
+  --up-navy: #0b132b;
+  --up-slate: #1e293b;
+  --up-text-muted: #64748b;
+  --up-border: #e2e8f0;
+  --up-border-focus: #3b82f6;
+  --up-card-bg: #ffffff;
+  --up-surface: #f8fafc;
+  --up-blue: #2563eb;
+  --up-blue-hover: #1d4ed8;
+  --up-blue-light: #eff6ff;
+  --up-green: #10b981;
+  --up-green-light: #ecfdf5;
+  --up-amber: #f59e0b;
+  --up-amber-light: #fffbeb;
+  --up-red: #ef4444;
+  --up-red-light: #fef2f2;
+  --up-shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --up-shadow-md: 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -1px rgba(0,0,0,0.04);
+  --up-shadow-lg: 0 10px 25px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+}
+
+/* Master Top Navigation Bar */
+.up-navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1.75rem;
+  background: #ffffff;
+  border-bottom: 1px solid var(--up-border);
+  box-shadow: var(--up-shadow-sm);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.up-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  text-decoration: none;
+  color: var(--up-navy);
+  font-weight: 800;
+  font-size: 1.25rem;
+  letter-spacing: -0.02em;
+}
+
+.up-brand-badge {
+  background: var(--up-blue-light);
+  color: var(--up-blue);
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  border: 1px solid #bfdbfe;
+}
+
+.up-portal-switch {
+  display: flex;
+  background: #f1f5f9;
+  padding: 0.25rem;
+  border-radius: 10px;
+  gap: 0.25rem;
+}
+
+.up-portal-btn {
+  padding: 0.45rem 1rem;
+  border: none;
+  background: transparent;
+  color: var(--up-slate);
+  font-size: 0.85rem;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.up-portal-btn:hover {
+  background: rgba(255, 255, 255, 0.6);
+  color: var(--up-navy);
+}
+
+.up-portal-btn.active {
+  background: #ffffff;
+  color: var(--up-blue);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+.up-nav-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.up-user-chip {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--up-surface);
+  border: 1px solid var(--up-border);
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--up-slate);
+}
+
+/* Customer Booking Layout */
+.up-booking-layout {
+  display: grid;
+  grid-template-columns: 460px 1fr;
+  height: calc(100vh - 65px);
+  overflow: hidden;
+}
+
+@media (max-width: 960px) {
+  .up-booking-layout {
+    grid-template-columns: 1fr;
+    height: auto;
+    overflow: visible;
+  }
+}
+
+.up-booking-sidebar {
+  background: #ffffff;
+  border-right: 1px solid var(--up-border);
+  overflow-y: auto;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  z-index: 500;
+}
+
+.up-map-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: #e2e8f0;
+}
+
+#leaflet-map {
+  width: 100%;
+  height: 100%;
+}
+
+/* Address Inputs & Autocomplete */
+.up-address-box {
+  background: var(--up-surface);
+  border: 1px solid var(--up-border);
+  border-radius: 12px;
+  padding: 0.75rem 1rem;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.up-input-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  position: relative;
+}
+
+.up-input-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.up-input-dot.pickup {
+  background: #10b981;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+}
+
+.up-input-dot.destination {
+  background: #0b132b;
+  border-radius: 2px;
+}
+
+.up-input-field {
+  width: 100%;
+  border: none;
+  background: transparent;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--up-navy);
+  outline: none;
+}
+
+.up-input-field::placeholder {
+  color: #94a3b8;
+  font-weight: 400;
+}
+
+.up-suggestions-list {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: #ffffff;
+  border: 1px solid var(--up-border);
+  border-radius: 8px;
+  box-shadow: var(--up-shadow-lg);
+  margin-top: 4px;
+  max-height: 220px;
+  overflow-y: auto;
+  z-index: 1000;
+}
+
+.up-suggestion-item {
+  padding: 0.65rem 1rem;
+  cursor: pointer;
+  border-bottom: 1px solid #f1f5f9;
+  font-size: 0.88rem;
+  transition: background 0.15s;
+}
+
+.up-suggestion-item:hover {
+  background: var(--up-blue-light);
+}
+
+.up-suggestion-name {
+  font-weight: 600;
+  color: var(--up-navy);
+}
+
+.up-suggestion-addr {
+  font-size: 0.75rem;
+  color: var(--up-text-muted);
+}
+
+/* Vehicle Category Cards */
+.up-vehicle-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.up-vehicle-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.85rem 1rem;
+  border: 1.5px solid var(--up-border);
+  border-radius: 12px;
+  background: #ffffff;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.up-vehicle-card:hover {
+  border-color: #93c5fd;
+  background: #f8fafc;
+}
+
+.up-vehicle-card.selected {
+  border-color: var(--up-blue);
+  background: var(--up-blue-light);
+  box-shadow: 0 0 0 1px var(--up-blue);
+}
+
+.up-vehicle-left {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.up-vehicle-icon {
+  font-size: 1.75rem;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f1f5f9;
+  border-radius: 10px;
+}
+
+.up-vehicle-title {
+  font-weight: 700;
+  color: var(--up-navy);
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.up-vehicle-capacity {
+  font-size: 0.75rem;
+  color: var(--up-text-muted);
+  font-weight: 500;
+}
+
+.up-vehicle-eta {
+  font-size: 0.78rem;
+  color: #059669;
+  font-weight: 600;
+  margin-top: 0.15rem;
+}
+
+.up-vehicle-price {
+  font-weight: 800;
+  font-size: 1.15rem;
+  color: var(--up-navy);
+  text-align: right;
+}
+
+.up-vehicle-distance {
+  font-size: 0.75rem;
+  color: var(--up-text-muted);
+  text-align: right;
+}
+
+/* Primary Action Buttons */
+.up-btn-primary {
+  width: 100%;
+  padding: 0.85rem 1.25rem;
+  background: var(--up-navy);
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.up-btn-primary:hover {
+  background: #1c2541;
+}
+
+.up-btn-primary:disabled {
+  background: #cbd5e1;
+  cursor: not-allowed;
+}
+
+/* Trip Tracking & State Box */
+.up-active-ride-card {
+  background: #ffffff;
+  border: 1px solid var(--up-border);
+  border-radius: 14px;
+  padding: 1.25rem;
+  box-shadow: var(--up-shadow-md);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.up-status-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.up-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 0.25rem 0.65rem;
+  border-radius: 999px;
+  text-transform: uppercase;
+}
+
+.up-status-badge.searching {
+  background: var(--up-amber-light);
+  color: #b45309;
+}
+
+.up-status-badge.assigned,
+.up-status-badge.arriving {
+  background: var(--up-blue-light);
+  color: var(--up-blue);
+}
+
+.up-status-badge.arrived,
+.up-status-badge.in_progress {
+  background: var(--up-green-light);
+  color: #047857;
+}
+
+/* 4-Digit Trip PIN Box */
+.up-pin-box {
+  background: #f8fafc;
+  border: 1.5px dashed #cbd5e1;
+  border-radius: 10px;
+  padding: 0.85rem;
+  text-align: center;
+}
+
+.up-pin-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--up-text-muted);
+  letter-spacing: 0.05em;
+}
+
+.up-pin-code {
+  font-size: 2rem;
+  font-weight: 900;
+  letter-spacing: 0.3em;
+  color: var(--up-navy);
+  font-family: 'JetBrains Mono', monospace;
+  margin: 0.25rem 0;
+}
+
+.up-pin-hint {
+  font-size: 0.75rem;
+  color: var(--up-text-muted);
+}
+
+/* Driver Profile Info */
+.up-driver-strip {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  background: #f8fafc;
+  border-radius: 10px;
+  padding: 0.75rem;
+}
+
+.up-driver-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #0b132b;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.up-driver-name {
+  font-weight: 700;
+  color: var(--up-navy);
+  font-size: 0.92rem;
+}
+
+.up-driver-vehicle {
+  font-size: 0.8rem;
+  color: var(--up-text-muted);
+}
+
+.up-plate-badge {
+  background: #fef08a;
+  color: #854d0e;
+  font-weight: 700;
+  padding: 0.1rem 0.35rem;
+  border-radius: 4px;
+  font-size: 0.72rem;
+  letter-spacing: 0.05em;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* Driver Offer Modal with Countdown */
+.up-driver-offer-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+  width: 90%;
+  max-width: 440px;
+  padding: 1.75rem;
+  z-index: 2000;
+  animation: slideUp 0.2s ease-out;
+}
+
+.up-countdown-bar {
+  height: 6px;
+  background: #e2e8f0;
+  border-radius: 999px;
+  overflow: hidden;
+  margin-top: 0.75rem;
+}
+
+.up-countdown-progress {
+  height: 100%;
+  background: #10b981;
+  transition: width 1s linear;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translate(-50%, -46%); }
+  to { opacity: 1; transform: translate(-50%, -50%); }
+}
+
+/* Modals & Dialogs */
+.up-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(11, 19, 43, 0.6);
+  backdrop-filter: blur(4px);
+  z-index: 1500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.up-modal-card {
+  background: #ffffff;
+  border-radius: 16px;
+  max-width: 500px;
+  width: 100%;
+  box-shadow: var(--up-shadow-lg);
+  overflow: hidden;
+}
+
+.up-modal-header {
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid var(--up-border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.up-modal-body {
+  padding: 1.5rem;
+}
+
+.up-modal-footer {
+  padding: 1rem 1.5rem;
+  background: var(--up-surface);
+  border-top: 1px solid var(--up-border);
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
+
+/* Receipt Breakdown Table */
+.up-receipt-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.45rem 0;
+  font-size: 0.88rem;
+  color: var(--up-slate);
+}
+
+.up-receipt-row.total {
+  border-top: 1.5px solid var(--up-border);
+  margin-top: 0.5rem;
+  padding-top: 0.75rem;
+  font-weight: 800;
+  font-size: 1.15rem;
+  color: var(--up-navy);
+}
+
+/* Operations Dashboard Grid */
+.up-admin-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.up-stat-card {
+  background: #ffffff;
+  border: 1px solid var(--up-border);
+  border-radius: 12px;
+  padding: 1.25rem;
+  box-shadow: var(--up-shadow-sm);
+}
+
+.up-stat-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--up-text-muted);
+}
+
+.up-stat-val {
+  font-size: 1.85rem;
+  font-weight: 800;
+  color: var(--up-navy);
+  margin-top: 0.25rem;
+}

@@ -138,6 +138,19 @@ class AuthMiddleware {
    * If none provided, attaches a default demo ADMIN identity so interactive UI works out-of-the-box.
    */
   authenticate(req, res, next) {
+    // Exempt public endpoints from mandatory valid token requirement
+    if (
+      req.path.startsWith('/api/v1/auth') ||
+      req.path.startsWith('/api/v1/maps') ||
+      req.path.startsWith('/api/v1/fares') ||
+      req.path.startsWith('/css') ||
+      req.path.startsWith('/js') ||
+      req.path === '/' ||
+      req.path.startsWith('/ws')
+    ) {
+      return next();
+    }
+
     let token = null;
     const authHeader = req.headers['authorization'];
     if (authHeader && authHeader.startsWith('Bearer ')) {
@@ -189,9 +202,15 @@ class AuthMiddleware {
 
 const authManager = new AuthMiddleware();
 
+const jwtAuth = {
+  generateToken: (payload, ttl = ACCESS_TOKEN_TTL_SEC) => JWTManager.sign(payload, ttl),
+  verifyToken: (token) => JWTManager.verify(token)
+};
+
 module.exports = {
   JWTManager,
   AuthMiddleware,
   authManager,
+  jwtAuth,
   ROLES
 };

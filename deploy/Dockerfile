@@ -13,6 +13,9 @@ RUN npm ci --omit=dev
 # Copy application source code
 COPY . .
 
+# Generate Prisma Client
+RUN npx prisma generate
+
 # Expose Distributed Ports:
 # 5000: Gateway Dashboard & WebSockets
 # 9000: Coordinator RPC Skeleton

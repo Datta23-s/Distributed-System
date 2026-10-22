@@ -1,5 +1,26 @@
 
 function App() {
+  const [currentPortal, setCurrentPortal] = React.useState('customer'); // 'customer' | 'driver' | 'admin' | 'inspector'
+  const [currentUser, setCurrentUser] = React.useState(null);
+  const [authToken, setAuthToken] = React.useState(null);
+
+  // Auto-login default customer session on launch
+  React.useEffect(() => {
+    fetch('/api/v1/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: 'customer@urbanpulse.in', password: 'Password@123' })
+    })
+      .then(r => r.json())
+      .then(d => {
+        if (d.success) {
+          setCurrentUser(d.user);
+          setAuthToken(d.token);
+        }
+      })
+      .catch(() => {});
+  }, []);
+
   const [activeTab, setActiveTab] = React.useState('dispatch'); // dispatch, fleet, reliability, records, inspector
   const [showConceptTags, setShowConceptTags] = React.useState(true);
   const [clockSkewMs, setClockSkewMs] = React.useState(4);
@@ -549,8 +570,72 @@ function App() {
 
   return (
     <div>
-      {/* Sticky Top Header & 5 Product Tabs */}
-      <div className="sticky-top-bar">
+      {/* Master Top Experience Navigation Bar */}
+      <header className="up-navbar">
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', flexWrap: 'wrap' }}>
+          <div className="up-brand" onClick={() => setCurrentPortal('customer')} style={{ cursor: 'pointer' }}>
+            <span>⚡ UrbanPulse</span>
+            <span className="up-brand-badge">Pune Metro</span>
+          </div>
+
+          <nav className="up-portal-switch">
+            <button
+              className={`up-portal-btn ${currentPortal === 'customer' ? 'active' : ''}`}
+              onClick={() => setCurrentPortal('customer')}
+            >
+              🚗 Customer App
+            </button>
+            <button
+              className={`up-portal-btn ${currentPortal === 'driver' ? 'active' : ''}`}
+              onClick={() => setCurrentPortal('driver')}
+            >
+              🚕 Driver Portal
+            </button>
+            <button
+              className={`up-portal-btn ${currentPortal === 'admin' ? 'active' : ''}`}
+              onClick={() => setCurrentPortal('admin')}
+            >
+              📊 Operations & Fleet
+            </button>
+            <button
+              className={`up-portal-btn ${currentPortal === 'inspector' ? 'active' : ''}`}
+              onClick={() => setCurrentPortal('inspector')}
+            >
+              🔬 System Inspector (30 Concepts)
+            </button>
+          </nav>
+        </div>
+
+        <div className="up-nav-meta">
+          <div className="up-user-chip">
+            <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: wsConnected ? '#10b981' : '#f59e0b', display: 'inline-block' }}></span>
+            <span>{wsConnected ? 'WSS Live' : 'Connecting'}</span>
+            <span style={{ color: 'var(--up-border)' }}>|</span>
+            <span>Aarav S. (Pune)</span>
+          </div>
+        </div>
+      </header>
+
+      {/* Portal 1: Customer Booking App */}
+      {currentPortal === 'customer' && (
+        <CustomerBooking currentUser={currentUser} authToken={authToken} />
+      )}
+
+      {/* Portal 2: Driver Portal */}
+      {currentPortal === 'driver' && (
+        <DriverPortal authToken={authToken} onSwitchRole={() => setCurrentPortal('customer')} />
+      )}
+
+      {/* Portal 3: Admin & Fleet Operations Dashboard */}
+      {currentPortal === 'admin' && (
+        <AdminDashboard authToken={authToken} />
+      )}
+
+      {/* Portal 4: Academic Distributed Systems Inspector */}
+      {currentPortal === 'inspector' && (
+        <div>
+          {/* Sticky Top Header & 5 Product Tabs */}
+          <div className="sticky-top-bar">
         <header className="app-header">
           <div className="logo-area">
             <div className="logo-icon">⚡</div>
@@ -1210,6 +1295,8 @@ function App() {
         onBroadcastHazard={handleBroadcastHazard}
         showConceptTags={showConceptTags}
       />
+        </div>
+      )}
     </div>
   );
 }

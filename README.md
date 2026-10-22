@@ -1,310 +1,159 @@
-# ⚡ UrbanPulse Dispatch - Distributed Ride-Sharing Platform (FA-1)
+# ⚡ UrbanPulse Dispatch — Production-Oriented Uber-Style Ride-Hailing Platform & Distributed Core
 
-> **Formative Assessment 1 (FA-1) Mini Project**  
-> **Course:** Distributed Systems  
-> **Topic:** Unified Distributed Ride-Sharing Platform & Protocol Simulator (Uber-Style Architecture)  
-> **Tech Stack:** Node.js, Express, React, WebSockets, WebRTC, TCP Sockets, UDP Datagrams  
-> **Architecture:** Multi-Node Distributed OS Processes communicating over Localhost Network Ports  
-
----
-
-## 📖 Product Overview & Distributed Architecture
-
-**UrbanPulse Dispatch** is an enterprise-grade ride-hailing simulator built on real distributed systems primitives. Unlike simple mocks or academic demos, UrbanPulse Dispatch runs real independent processes communicating over raw TCP sockets, UDP datagrams, WebSockets, and WebRTC channels.
-
-Every ride booked through the platform traverses an authentic **6-stage distributed pipeline**:
-1. **Quote:** Synchronous RPC over TCP (`:9000`) with measured network latency injection.
-2. **Match:** Coordinator queries in-memory Service Registry (`middleware/naming.js`).
-3. **Dispatch:** Asynchronous Message-Oriented Middleware queue (`:9100`) assigns the driver.
-4. **In Trip:** Real-time vehicle telemetry streamed via WebSockets at 2.5 Hz.
-5. **Complete:** Ride receipt automatically written to **Mini-HDFS** (`:9200`), mined into the **Blockchain Ledger** (`:9600`) via Proof-of-Work, and synced to the **Replicated Quorum KV Store** (`:9700`).
-6. **Analytics Refresh:** MapReduce batch jobs compute updated revenue and trips per zone.
+> **Repository:** [https://github.com/Datta23-s/Distributed-System](https://github.com/Datta23-s/Distributed-System)  
+> **Service Area:** Pune Metro, Maharashtra, India  
+> **Currency:** Indian Rupee (INR ₹)  
+> **Tech Stack:** Node.js (v18+), Express Gateway, Prisma ORM (SQLite / PostgreSQL), React 18, Leaflet Maps, WebSockets, WebRTC, TCP/UDP Sockets  
+> **Architecture:** Full-Stack Mobility Application backed by a 30-Concept Distributed Systems Architecture  
 
 ---
 
-## 🚀 Quick Start (Running the Simulator)
+## 🌟 Executive Summary & Product Architecture
 
-### Prerequisites
-* **Node.js** (v18 or higher — tested with v24.12.0)
-* **npm** (v9 or higher — tested with v11.6.2)
+**UrbanPulse Dispatch** is a real full-stack, Uber-style customer-facing ride-hailing web platform built for **Pune, Maharashtra, India**. It elevates academic distributed-systems research into an authentic, production-grade web application with three synchronized portals and a preserved engineering hub:
 
-### Step 1: Install Dependencies
-```bash
+1. 🚗 **Customer Web Application:**
+   - Interactive Leaflet Map for Pune Metro (Shivajinagar, Hinjewadi, Koregaon Park, Pune Airport PNQ, Swargate, Kothrud, Baner, Kharadi).
+   - Real-time address autocomplete & reverse geocoding.
+   - Dynamic server-side fare quotes for 4 vehicle categories (**UrbanPulse Moto**, **Pune Auto Rickshaw**, **UrbanPulse Go**, and **UrbanPulse Premier**).
+   - Atomic ride booking with unique reference numbers (e.g. `UP-PUN-72819`).
+   - Secure 4-digit **Trip PIN** verification before ride start.
+   - Real-time vehicle telemetry and driver tracking on Leaflet map.
+   - Itemized receipts (Base fare, distance rate, platform fees, 5% GST).
+   - 5-Star driver rating and review submission.
+   - Safety emergency panel (Pune Police 112, Women's Helpline 1091, Ambulance 108).
+
+2. 🚕 **Driver Web Portal:**
+   - Multi-persona switching (Rajesh Patil - Swift Dzire Cab, Santosh Jadhav - Bajaj Auto, Vikram Deshmukh - Splendor Bike).
+   - Online / Offline availability toggle (`AVAILABLE` $\leftrightarrow$ `OFFLINE`).
+   - Incoming ride request offer modal with real-time 30-second countdown bar.
+   - Dispatch workflow: "En Route to Pickup" $\rightarrow$ "Arrived at Pickup" $\rightarrow$ 4-Digit Passenger PIN Verification $\rightarrow$ "Start Journey" $\rightarrow$ "Complete Journey".
+   - Driver Earnings Dashboard with lifetime revenue in ₹, trip counters, and ride history ledger.
+
+3. 📊 **Admin & Dispatch Operations Dashboard:**
+   - Real-time operational KPI cards: Active Rides, Completed Trips, Cancelled Rides, Fleet Online, and Total Revenue in INR ₹.
+   - Live Ride Monitoring & Search Table with status filtering.
+   - Fleet Drivers Table with vehicle plate, license number, and approval status.
+   - Dynamic Pricing & Surge Configuration editor with instant database persistence.
+   - Passenger Support & Incident Tickets table with status resolution toggle.
+
+4. 🔬 **Academic Systems Inspector (30 Live Concepts):**
+   - 100% preservation of all 30 distributed-systems algorithms:
+     - **Unit 1:** RPC Client/Skeleton, MOM Persistent Queues & Topic Pub/Sub, P2P UDP Gossip mesh, Heartbeat Failure Detector.
+     - **Unit 3:** Lamport Logical Clocks, Vector Clocks, Decentralized UDP Beacons, Bully Leader Election, Ring Election, Ricart-Agrawala Mutual Exclusion, Cristian & Berkeley Physical Clock Sync, Chandy-Lamport Snapshots, Chandy-Misra-Haas Deadlock Detection.
+     - **Unit 4:** Mini-HDFS Distributed Storage (NameNode + DataNodes), Distributed MapReduce, Serverless FaaS Runtime, Remote Object Registry (RMI), Gateway Load Balancer, Blockchain PoW Ledger, Dynamo Tunable Quorum KV Store.
+     - **Unit 4 Advanced:** OpenTelemetry Tracing, Hystrix Circuit Breakers, CQRS & Event Sourcing, Token Bucket Rate Limiting, 2D R-Tree Geo-Spatial Indexing, Redis-Compatible Cache, gRPC Protocol Buffers Sidecar, and Chaos Monkey Fault Injection.
+
+---
+
+## 🗄️ Database Design & Models (Prisma ORM)
+
+Persistent application records are managed through **Prisma ORM** with SQLite (`prisma/dev.db`) for immediate zero-config local runs on Windows, and seamless PostgreSQL compatibility for Docker deployments:
+
+* **User**: Customer, Driver, and Admin credentials with salted bcrypt password hashing.
+* **CustomerProfile**: Emergency contact name/phone, rider rating, total rides.
+* **DriverProfile**: License number, status (`AVAILABLE`, `RESERVED`, `ON_TRIP`, `OFFLINE`), rating, total trips, lifetime earnings.
+* **Vehicle**: Make, model, category (`BIKE`, `AUTO`, `ECONOMY`, `PREMIUM`), license plate, color, capacity, approval status.
+* **FareConfiguration**: Configurable base fare, per km rate, per minute rate, minimum fare, cancellation fee, surge multiplier.
+* **FareQuote**: Durable quotes with 15-minute expiration timestamp and fare breakdown.
+* **Ride**: Authoritative state machine (`REQUESTED`, `SEARCHING`, `DRIVER_ASSIGNED`, `DRIVER_ARRIVING`, `DRIVER_ARRIVED`, `IN_PROGRESS`, `COMPLETED`, `CANCELLED`, `NO_DRIVER_AVAILABLE`), 4-digit numeric `tripPin`.
+* **RideAssignment**: Atomic offers, accept/reject logs, 30s timeout timestamps.
+* **RideStatusEvent**: Traceable audit log of every state change and transition timestamp.
+* **Payment**: Cash and sandbox transactions with transaction reference codes.
+* **Rating**: 1-to-5 star scores and textual feedback.
+* **SupportTicket**: Categorized incident reports (`SAFETY_CONCERN`, `FARE_ISSUE`, `LOST_ITEM`).
+* **IdempotencyRecord**: Cryptographic duplicate-request prevention.
+
+---
+
+## 🔑 Pre-Seeded Demo Accounts
+
+The database includes pre-configured Pune demo accounts (Password for all: `Password@123`):
+
+| Persona | Email | Role | Vehicle / Details |
+|---|---|---|---|
+| **Customer** | `customer@urbanpulse.in` | `CUSTOMER` | Aarav Sharma (FC Road, Shivajinagar, Pune) |
+| **Driver 1 (Cab)** | `driver1@urbanpulse.in` | `DRIVER` | Rajesh Patil — Maruti Swift Dzire (`MH 12 QX 4501`) |
+| **Driver 2 (Auto)** | `driver2@urbanpulse.in` | `DRIVER` | Santosh Jadhav — Bajaj RE Compact (`MH 12 AB 8821`) |
+| **Driver 3 (Bike)** | `driver3@urbanpulse.in` | `DRIVER` | Vikram Deshmukh — Hero Splendor (`MH 14 BK 1902`) |
+| **Admin** | `admin@urbanpulse.in` | `ADMIN` | Operations Dispatcher (Full administrative control) |
+
+---
+
+## 🚀 Windows PowerShell Commands
+
+### 1. Install Dependencies
+```powershell
 npm install
 ```
 
-### Step 2: Launch All Distributed Nodes
-```bash
+### 2. Push Database Schema & Seed Data
+```powershell
+npx prisma db push
+npm run seed
+```
+
+### 3. Run Automated Tests (46 Tests — 100% Pass)
+```powershell
+# Run API v1 ride-hailing tests
+npm run test:api
+
+# Run distributed systems concept tests
+npm test
+
+# Run ALL 46 tests
+npm run test:all
+```
+
+### 4. Start the Application
+```powershell
 npm start
 ```
-This launches all platform processes:
-1. **Coordinator Node** (RPC Skeleton `:9000`, MOM Broker `:9100`, NameNode `:9200`, MapReduce Master)
-2. **Driver 1 Node** (P2P Gossip UDP `:9021`, Control TCP `:9031`, Beacon UDP `:9041`, DataNode `:9301`, Object Skeleton `:9501`)
-3. **Driver 2 Node** (P2P Gossip UDP `:9022`, Control TCP `:9032`, Beacon UDP `:9042`, DataNode `:9302`, Object Skeleton `:9502`)
-4. **Driver 3 Node** (P2P Gossip UDP `:9023`, Control TCP `:9033`, Beacon UDP `:9043`, DataNode `:9303`, Object Skeleton `:9503`)
-5. **Serverless FaaS Runtime** (Port `:9400`)
-6. **Object Registry / RMI** (Port `:9500`)
-7. **Blockchain Ledger Node** (Port `:9600`)
-8. **Dynamo Quorum KV Store** (Port `:9700`)
-9. **Express Gateway Cluster** (Reverse Proxy `:5000`, Multi-instance Backends `:5001-5003`)
-
-### Step 3: Open Dashboard
 Open your browser at:
 👉 **`http://localhost:5000`**
 
 ---
 
-## 🧪 Running Automated Unit Tests
+## 🔌 API v1 Endpoints Reference
 
-UrbanPulse Dispatch includes a 100% comprehensive test suite covering all 20 distributed systems concepts:
-```bash
-npm test
+| Method | Endpoint | Description | Auth Required |
+|---|---|---|---|
+| `POST` | `/api/v1/auth/register` | Register new customer or driver | None |
+| `POST` | `/api/v1/auth/login` | Login and receive JWT token | None |
+| `GET` | `/api/v1/auth/me` | Fetch authenticated session profile | Bearer Token |
+| `GET` | `/api/v1/maps/search?q=...` | Search Pune landmarks & addresses | None |
+| `POST` | `/api/v1/maps/route` | Calculate road distance, duration & polyline | None |
+| `POST` | `/api/v1/fares/quote` | Generate vehicle quotes in INR (₹) | None |
+| `POST` | `/api/v1/rides/book` | Create persistent ride & trigger dispatch | Customer Token |
+| `GET` | `/api/v1/rides/active` | Get customer's current active ride | Customer Token |
+| `POST` | `/api/v1/rides/:id/cancel` | Cancel ride with reason | Customer Token |
+| `POST` | `/api/v1/rides/:id/rate` | Submit 5-star driver review | Customer Token |
+| `GET` | `/api/v1/driver/profile` | Driver profile & vehicle info | Driver Token |
+| `POST` | `/api/v1/driver/status` | Toggle status (`AVAILABLE` / `OFFLINE`) | Driver Token |
+| `GET` | `/api/v1/driver/offers` | Get pending ride offer (30s window) | Driver Token |
+| `POST` | `/api/v1/driver/assignments/:id/accept` | Atomically accept offer | Driver Token |
+| `POST` | `/api/v1/driver/rides/:id/arrived` | Mark arrived at pickup location | Driver Token |
+| `POST` | `/api/v1/driver/rides/:id/verify-pin` | Verify 4-digit passenger PIN & start | Driver Token |
+| `POST` | `/api/v1/driver/rides/:id/complete` | Complete ride & generate receipt | Driver Token |
+| `GET` | `/api/v1/admin/overview` | Live metrics & revenue in INR | Admin Token |
+| `GET` | `/api/v1/admin/rides` | Live rides table with status filters | Admin Token |
+| `PUT` | `/api/v1/admin/fares/:id` | Update vehicle base fare & surge | Admin Token |
+| `GET` | `/api/v1/admin/health` | System health & circuit breaker status | Admin Token |
+
+---
+
+## 🐳 Docker Deployment
+
+To build and run the multi-node distributed topology inside Docker containers:
+```powershell
+docker-compose -f deploy/docker-compose.yml up --build
 ```
-
-### Verified Test Suite (All 20 Passing):
-* `Test 1:` **Service Registry & Location Transparency** (Name resolution & unique ID generation)
-* `Test 2:` **Remote Procedure Call (RPC)** (Client Stub parameter packing $\leftrightarrow$ Skeleton execution)
-* `Test 3:` **Message-Oriented Middleware (MOM)** (Persistent Queues & Topic Pub/Sub)
-* `Test 4:` **Peer-to-Peer (P2P) UDP Gossip Mesh** (Decentralized hazard diffusion)
-* `Test 5:` **Fault Tolerance** (Heartbeat failure detection & crash watchdog)
-* `Test 6:` **Lamport Logical Clocks** (Monotonic clock tick, send/receive wire piggybacking)
-* `Test 7:` **Vector Clocks & Causality** (Fidge/Mattern detection of BEFORE, AFTER, CONCURRENT, EQUAL)
-* `Test 8:` **Decentralized Beacon Protocol** (UDP 1s beacons, live neighbour table, timeout expiry)
-* `Test 9:` **Bully Leader Election** (TCP ELECTION / OK / COORDINATOR probes, highest-ID winner)
-* `Test 10:` **Ring Leader Election** (Logical token ring, candidate list circulation, $2N$ message complexity)
-* `Test 11:` **Distributed Mutual Exclusion** (Ricart-Agrawala deferred replies & Token Ring circulation)
-* `Test 12:` **Physical Clock Synchronization** (Cristian's $RTT/2$ delay compensation & Berkeley average)
-* `Test 13:` **Chandy-Lamport Distributed Snapshot** (Consistent cut across 5 nodes, FIFO markers)
-* `Test 14:` **Chandy-Misra-Haas Deadlock Detection** (Edge-chasing probe circulation, victim preemption)
-* `Test 15:` **Mini-HDFS Distributed Storage** (512-byte chunking, 2x replication, failover reads, re-replication)
-* `Test 16:` **Distributed MapReduce** (Data locality mappers, partitioning shuffle, reduce aggregations)
-* `Test 17:` **Serverless FaaS Runtime** (Container lifecycle, micro-VM cold boot vs warm reuse)
-* `Test 18:` **Distributed Objects & RMI** (Remote Object References, native ES6 Proxy traps, TCP skeleton)
-* `Test 19:` **Gateway Load Balancer & Caching** (Round-Robin vs Least-Connections, health check removal, ETag 304 caching)
-* `Test 20:` **Blockchain Ledger & Dynamo Quorum KV Store** (SHA-256 PoW mining, majority consensus repair, tunable quorum $N/R/W$, Read Repair)
+This deploys the Coordinator, 3 Driver nodes, Serverless FaaS, and Express Gateway on an isolated bridge network (`172.28.0.0/16`).
 
 ---
 
-## 🧭 Product Navigation & Feature Layout
+## 🧪 Verification & Test Results
 
-The user interface is organized into **5 unified product tabs**, topped by a persistent status bar:
-
-### Persistent Top Bar
-* **Leader Badge:** Displays active coordinator status (`Coordinator (primary)` or failover leader).
-* **Cluster Health Dots:** Real-time liveness dots for 8 nodes: Coordinator (`C`), Drivers 1-3 (`D1-D3`), Customer (`U`), Gateway instances (`G1-G3`).
-* **Physical Clock Skew:** Live physical drift monitor ($\pm 4\text{ms}$).
-* **Gateway Indicator:** Active load-balanced Express instance serving requests (`gw-1 :5001`).
-* **✨ Guided Demo:** Triggers the automated 8-step viva walkthrough dock.
-* **🏷️ Concepts Toggle:** Toggles academic distributed systems concept chips (`ON`/`OFF`).
-
----
-
-### Tab 1: 🚖 Dispatch
-* **2D City Canvas Grid:** Interactive map rendering pickup, dropoff, drivers, and zone shortcuts (`🏡 Uptown`, `🏙️ Downtown`, `✈️ Airport`, `💻 Tech Park`, `⚓ Harbour`).
-* **Booking Card:** Editable pickup/dropoff coordinates, "Set via Map" mode, "Get Quote" (RPC with latency), "Request Ride" (MOM queue), and "WebRTC Call" button.
-* **6-Stage Distributed Ride Pipeline:** Stepper tracking Quote $\to$ Match $\to$ Dispatch $\to$ In Trip $\to$ Complete $\to$ Analytics Refresh.
-* **3-View Live Activity Feed:**
-  * *Plain English:* Human-readable ride timeline.
-  * *Lamport Order:* Monotonically ordered events sorted by logical timestamp ($L$).
-  * *Raw Packets:* Scrollable protocol frames with JSON payload inspection.
-
----
-
-### Tab 2: 🚗 Fleet & Resources
-* **Driver Node Cards (`driver-1`, `driver-2`, `driver-3`):**
-  * Displays GPS coordinates, UDP gossip port (`:9021-3`), beacon port (`:9041-3`), and RMI skeleton port (`:9501-3`).
-  * Real-time beacon neighbours list with dynamic timeouts.
-  * Direct action buttons: **Crash / Recover Node** and **📢 P2P Gossip Hazard**.
-* **Exclusive Resource Queues (Mutual Exclusion):**
-  * Manages contention for **Airport Pickup Bay** and **Fleet EV Supercharger**.
-  * Side-by-side comparison of **Ricart-Agrawala** ($2(N-1)$ messages), **Token Ring** ($0$ to $N$ hops), and **Lodha-Kshemkalyani**.
-  * Interactive Request / Release Critical Section controls.
-* **Physical Clock Synchronization:**
-  * Compares **Cristian's Algorithm** ($RTT/2$ delay compensation) vs **Berkeley Algorithm** (master average convergence).
-  * Visualizes per-node drift rates and offsets before and after synchronization.
-* **Decentralized Neighbour Discovery:**
-  * Displays live neighbour tables updated via 1-second UDP datagram beacons.
-
----
-
-### Tab 3: 🛡️ Reliability
-* **Fault Tolerance & Failover Demonstration Box:**
-  * One-click simulation crashing Driver 2 during active rides; Coordinator detects missed heartbeats (>3.5s) and automatically re-dispatches to Driver 3.
-* **Leader Election (Bully vs Ring):**
-  * Interactive election trigger simulating coordinator crash.
-  * Live trace of `ELECTION`, `OK`, and `COORDINATOR` probe messages.
-  * Algorithmic complexity comparison table (Message Complexity, Failure Handling, Best/Worst Case).
-* **Chandy-Lamport Distributed Snapshot:**
-  * Captures a causally consistent cut across all 5 nodes without pausing execution.
-  * Displays recorded process states (bank balances, ride state) and in-flight FIFO channel states.
-* **Chandy-Misra-Haas Edge-Chasing Deadlock Detection:**
-  * Induces circular resource contention between nodes.
-  * Circulates $O(1)$ lightweight `PROBE(init, sender, receiver)` messages along Wait-For-Graph edges.
-  * Visualizes probe hops and automatically preempts victim to resolve deadlock.
-
----
-
-### Tab 4: 📁 Records & Analytics
-* **Unified Cluster Summary Card:** Live metrics for DFS replication ($2\times$), MapReduce engine, Blockchain ledger blocks, and Quorum consistency level.
-* **Mini-HDFS Distributed Storage:**
-  * Splits fleet records into 512-byte blocks replicated $2\times$ across DataNodes (`:9301-9303`).
-  * Live file selector and custom file write form.
-  * DataNode status cards with chunk counts and crash/recover buttons.
-  * NameNode chunk placement map and fault-tolerant read viewer with replica routing trace.
-  * One-click re-replication restoring under-replicated chunks.
-* **Distributed MapReduce Analytics Engine:**
-  * Parallel batch processing with **Data Locality** (mappers execute on DataNodes storing chunks).
-  * Visual 3-phase progress bars: Map $\to$ Shuffle & Partition $\to$ Reduce Aggregation.
-  * Aggregated analytics table (fares and completed trips per zone/driver).
-* **Immutable Blockchain / DLT Ledger:**
-  * SHA-256 hash-chained trip ledger with Proof-of-Work mining target (`'000'` prefix).
-  * 4-node integrity status grid (`coordinator`, `driver-1`, `driver-2`, `driver-3`).
-  * Tamper injection on Driver 2 breaking cryptographic hash binding.
-  * Majority consensus repair ($3 > 1$) restoring the corrupted ledger.
-* **Replicated Quorum Key-Value Store (Dynamo-Style):**
-  * Tunable $(N=3, R, W)$ quorum sliders with live Consistency Model badge.
-  * 3 replica node cards showing stored keys, vector clock versions, and partition toggles.
-  * Quorum write and quorum read with automatic asynchronous Read Repair.
-
----
-
-### Tab 5: 🔍 System Inspector
-* **Subtab 1: Network Topology & Wire Flow:** Interactive animated SVG topology rendering active RPC calls, MOM topics, and P2P gossip mesh links.
-* **Subtab 2: Load Balancer, Serverless & Objects:**
-  * *Serverless FaaS Runtime:* Micro-VM cold start ($300-800\text{ms}$) vs warm container reuse ($5-15\text{ms}$).
-  * *Distributed Objects (RMI):* ES6 Proxy stubs intercepting local calls (`driverProxy.getLocation()`) and dispatching transparently to remote RPC skeletons.
-  * *Gateway Load Balancer:* Reverse proxy fronting Express instances (`:5001-5003`), Round-Robin vs Least-Connections policy, and HTTP ETag caching.
-* **Subtab 3: Causality & Lamport Event Log:**
-  * Causality inspector evaluating pairwise Fidge/Mattern vector clocks ($A \to B$ vs $A \parallel B$).
-  * Live concurrency simulator demonstrating simultaneous UDP hazard broadcasts with verified concurrent verdict.
-  * Global ordered event log sorted by Lamport timestamp ($L$).
-* **Subtab 4: Raw Wire Packets:** Full scrollable stream of protocol packets with metadata.
-* **Subtab 5: Reference Architecture:** Syllabus and viva master guide with concept-to-code mapping.
-
----
-
-## 🎓 8-Step Viva Walkthrough (Guided Demo Mode)
-
-Clicking the **`✨ Guided Demo`** button in the persistent top bar opens the floating tour dock, guiding examiners through all key distributed systems concepts:
-
-| Step # | Topic / Concept | Active Tab | What to Tell the Examiner (Viva Script) | Interactive Action |
-| :---: | :--- | :---: | :--- | :--- |
-| **1** | **Client-Server RPC Booking & Dynamic Pricing** | `DISPATCH` | *"The customer client stub marshals coordinates into a JSON-RPC frame over TCP:9000. Notice the measured 24ms RTT and Lamport timestamp tick piggybacked on the network packet."* | Request RPC Fare Quote |
-| **2** | **MOM Pub/Sub Queue & P2P UDP Gossip Mesh** | `DISPATCH` | *"MOM decouples in time and space: rides persist in the FIFO queue even if drivers drop. Meanwhile, road hazard alerts diffuse in O(log N) rounds over decentralized UDP datagrams without coordinator routing."* | Dispatch Ride & Broadcast P2P Hazard |
-| **3** | **Heartbeat Failure Detection & Bully Leader Election** | `RELIABILITY` | *"Nodes maintain liveness via 1s UDP beacons. If coordinator heartbeats cease >3.5s, live drivers exchange ELECTION/OK probes and the highest-ID driver announces leadership and rebinds the service registry."* | Trigger Leader Election Walkthrough |
-| **4** | **Distributed Mutual Exclusion (Airport Bay)** | `FLEET` | *"Drivers coordinate exclusive entry to Airport Bay without a central lock server. In Ricart-Agrawala, nodes with higher Lamport timestamps defer replies until exiting the critical section."* | Request Exclusive Airport Bay Entry |
-| **5** | **Chandy-Lamport Snapshot & Deadlock Detection** | `RELIABILITY` | *"Chandy-Lamport captures a causally consistent cut without freezing execution using FIFO markers. Chandy-Misra-Haas uses O(1) edge-chasing probes to detect distributed deadlocks."* | Capture Chandy-Lamport Snapshot |
-| **6** | **Distributed Storage (Mini-HDFS) & MapReduce** | `RECORDS` | *"Mini-HDFS replicates chunks 2x across DataNodes. MapReduce exploits data locality by dispatching compute tasks to the specific DataNodes holding the chunks, preventing network saturation."* | Submit Distributed MapReduce Job |
-| **7** | **Immutable Blockchain (PoW) & Consensus Repair** | `RECORDS` | *"Each block cryptographically binds to the previous hash. When tampering is injected on Driver 2, the hash chain breaks. Majority voting (3 honest vs 1 corrupt) allows honest nodes to outvote and repair Driver 2."* | Mine PoW Block & Verify Consensus |
-| **8** | **Amazon Dynamo Quorum KV Store & Read Repair** | `RECORDS` | *"When R + W > N (e.g. 2 + 2 > 3), strict quorum overlap guarantees strong consistency. Reading from a stale replica triggers asynchronous Read Repair to propagate the latest vector clock version."* | Execute Quorum Write & Read Repair |
-
----
-
-## 🌐 Complete Network Port Architecture Map
-
-| Service / Process | Port(s) | Transport | Role & Responsibilities |
-| :--- | :--- | :--- | :--- |
-| **Express Gateway (Reverse Proxy)** | `5000` | HTTP / WS | Web dashboard, REST API bridge, WebSocket stream, WebRTC signaling |
-| **Gateway LB Backend Instances** | `5001-5003` | HTTP | Multi-instance Express backends with ETag caching |
-| **Coordinator Node (RPC Skeleton)** | `9000` | TCP | Matchmaking, fare calculation, RPC skeleton |
-| **MOM Message Broker** | `9100` | TCP | Persistent FIFO queues (`rides.requests`), pub/sub topics (`rides.status`) |
-| **Mini-HDFS NameNode (Master)** | `9200` | TCP / Internal | Namespace metadata, chunk placement, re-replication |
-| **Mini-HDFS DataNodes (1, 2, 3)** | `9301-9303` | TCP | 512-byte block storage daemons (`./data/<nodeId>/chunks/`) |
-| **Serverless FaaS Runtime** | `9400` | HTTP | Micro-VM container lifecycle, cold start vs warm container reuse |
-| **Distributed Object Registry (RMI)** | `9500` | TCP / Internal | Remote Object References (`obj://driver-X`), ES6 Proxy stubs |
-| **Driver Object Skeletons (1, 2, 3)** | `9501-9503` | TCP | Dedicated RMI skeleton ports per driver node |
-| **Blockchain Distributed Ledger** | `9600` | Internal / TCP | SHA-256 hash chaining, PoW nonce mining, majority consensus |
-| **Replicated Quorum KV Store** | `9700` | Internal / TCP | Amazon Dynamo style tunable $N/R/W$, Vector Clock Read Repair |
-| **Driver P2P Mesh (1, 2, 3)** | `9021-9023` | UDP Datagram | Epidemic hazard gossip overlay mesh |
-| **Driver Control Sockets (1, 2, 3)** | `9031-9033` | TCP Sockets | Bully/Ring election, mutex replies, Chandy-Lamport markers |
-| **Driver UDP Beacons (1, 2, 3)** | `9041-9043` | UDP Broadcast | 1-second decentralized neighbour discovery beacons |
-
----
-
-## 📚 Complete Syllabus Concept to Code Mapping
-
-### Unit 1: Introduction to Distributed Systems
-* **Distribution Transparency:**
-  * *Access Transparency:* Client Stub abstracts network serialization (`middleware/rpc.js`).
-  * *Location Transparency:* Services looked up via `service://coordinator` (`middleware/naming.js`).
-  * *Migration Transparency:* Drivers move dynamically across grid coordinates while network connections persist.
-  * *Failure Transparency:* Coordinator automatically re-dispatches rides when drivers crash (`middleware/faultMonitor.js`).
-* **Types of Distributed Systems:**
-  * *Distributed Computing:* Parallel nearest-driver matchmaking algorithm.
-  * *Distributed Information:* Multi-state transactional ride lifecycle.
-  * *Distributed Pervasive Systems:* Edge vehicle nodes streaming continuous GPS telemetry.
-* **Architectures:**
-  * *Layered Architecture:* React UI $\rightarrow$ Express Gateway $\rightarrow$ Middleware $\rightarrow$ Distributed Nodes.
-  * *Hybrid Architecture:* Centralized dispatch + decentralized P2P Driver Gossip mesh.
-* **Distributed Multimedia:**
-  * WebRTC voice calling + continuous real-time telemetry streaming (`public/js/WebRTCModal.jsx`).
-
-### Unit 2: Communication
-* **Fundamentals of Communication:**
-  * *Synchronous:* RPC calls for instant fare quotes and booking.
-  * *Asynchronous:* MOM Queues and Pub/Sub for trip updates.
-* **Remote Procedure Call (RPC):**
-  * Custom `RPCClientStub` and `RPCServerSkeleton` over TCP with length-prefixed JSON frames (`middleware/rpc.js`).
-* **Message-Oriented Middleware (MOM):**
-  * Persistent FIFO Queues + Pub/Sub Topics (`rides.status`, `driver.telemetry`) in `middleware/broker.js`.
-* **Stream-Oriented Communication:**
-  * High-frequency GPS telemetry stream (2.5 Hz) from drivers to UI over WebSockets.
-* **Peer-to-Peer (P2P) Messaging:**
-  * Driver nodes form a UDP overlay mesh (`middleware/p2pMesh.js`) gossiping road hazards without coordinator intervention.
-* **WebRTC:**
-  * Direct browser-to-driver audio call with live waveform visualization and DataChannel text chat.
-* **Names & Fault Tolerance:**
-  * Service Registry in `middleware/naming.js`.
-  * Heartbeat Monitor (missed pings $>3.5\text{s}$) triggering automatic failover in `middleware/faultMonitor.js`.
-
-### Unit 3: Synchronization
-* **Logical Clocks (Lamport Timestamps):**
-  * Implemented in `middleware/lamport.js`. Monotonic partial ordering ($L = \max(L_{\text{local}}, L_{\text{msg}}) + 1$).
-* **Vector Clocks (Causality Tracking):**
-  * Implemented in `middleware/vectorClock.js`. Detects concurrent independent events ($A \parallel B$) vs causal chains ($A \to B$).
-* **Decentralized Discovery & Beacons:**
-  * Implemented in `middleware/beacon.js`. 1s UDP beacons with 3s timeout expiry.
-* **Leader Election (Bully & Ring):**
-  * Implemented in `middleware/election.js`. Garcia-Molina Bully algorithm and Token Ring election with $2N$ complexity.
-* **Distributed Mutual Exclusion:**
-  * Implemented in `middleware/mutex.js`. Ricart-Agrawala ($2(N-1)$ messages, deferred replies), Token Ring, and Lodha-Kshemkalyani fair mutex.
-* **Physical Clock Synchronization:**
-  * Implemented in `middleware/clockSync.js`. Cristian's ($RTT/2$ delay compensation) and Berkeley multi-node average convergence.
-* **Global State & Distributed Snapshot:**
-  * Implemented in `middleware/snapshot.js`. Chandy-Lamport FIFO markers over TCP control ports (`9030-9033`) validating consistent cuts.
-* **Distributed Deadlock Detection & Resolution:**
-  * Implemented in `middleware/deadlock.js`. Chandy-Misra-Haas edge-chasing probe circulation, victim preemption, and Knapp's 4-family classification.
-
-### Unit 4: Emerging Distributed Paradigms
-* **Distributed File Systems (Mini-HDFS):**
-  * Implemented in `services/dfs/nameNode.js` & `services/dfs/dataNode.js`.
-  * Splits files into fixed 512-byte chunks and replicates $2\times$ across DataNodes (`:9301-9303`).
-  * Resilient reads failover across surviving replicas on node crash; autonomous re-replication restores $2\times$ invariant.
-* **Distributed Data Processing (MapReduce):**
-  * Implemented in `services/mapreduce/mapReduceMaster.js` & `services/mapreduce/jobs.js`.
-  * Master orchestrates Map (data locality over DFS chunks), Shuffle & Partition (grouping intermediate key-values), and Reduce (parallel aggregation).
-* **Serverless FaaS Runtime:**
-  * Implemented in `services/serverless/serverlessRuntime.js` (Port `9400`).
-  * Micro-VM container lifecycle with cold-boot initialization ($300-800\text{ms}$) vs warm container reuse ($5-15\text{ms}$).
-  * Auto-triggered via MOM broker topic events (`rides.status`) to execute `generateReceipt` asynchronously.
-* **Distributed Objects & Remote Method Invocation (RMI):**
-  * Implemented in `middleware/objectRegistry.js` (Port `9500`).
-  * Remote Object References (`obj://driver-X`) wrapped via native ES6 `Proxy` stubs with full call chain visualization.
-* **Gateway Load Balancer & HTTP Caching:**
-  * Implemented in `services/gateway-lb/loadBalancer.js` (Port `5000`, backends `5001-5003`).
-  * Round-Robin vs Least-Connections balancing, health check removal, and MD5 ETag caching (`304 Not Modified`).
-* **Distributed Ledger & Blockchain (DLT):**
-  * Implemented in `services/ledger/blockchainLedger.js` (Port `9600`).
-  * SHA-256 hash chaining, Proof-of-Work nonce mining with `'000'` target, tamper injection, and majority consensus repair ($3 > 1$).
-* **Replicated KV Store (Amazon Dynamo Quorum):**
-  * Implemented in `services/kvstore/quorumKvStore.js` (Port `9700`).
-  * Tunable $(N=3, R, W)$ quorum consensus, vector clock conflict resolution, automatic Read Repair, and network partition simulation.
-* **Industry Architecture Mapping:**
-  * Interactive Matrix mapping UrbanPulse modules to Hadoop HDFS, Kubernetes, AWS Lambda, Cloudflare Edge, and Megaport Overlays.
-
----
-
-## 👥 Authors & Academic Context
-* **Project:** Formative Assessment 1 (FA-1) Mini Project
-* **Course:** Distributed Systems
-* **Repository:** UrbanPulse Dispatch Platform
+* **Distributed Systems Tests:** 30 / 30 Passed (`test/test_distributed.js`)
+* **Ride-Hailing API v1 Tests:** 16 / 16 Passed (`test/test_api_v1.js`)
+* **Total Passing Tests:** **46 / 46 (0 Failures)**
