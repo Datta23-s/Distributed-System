@@ -259,6 +259,18 @@ async function runTests() {
     assert(res.data.metrics.totalRevenue >= 100, 'Recorded payment revenue should be tracked');
   });
 
+  // 16. Recent Fleet Trips Feed (Dashboard API)
+  await test('Retrieve live fleet trips feed (/rides/recent) with relations', async () => {
+    const res = await makeRequest('GET', '/rides/recent');
+    assert.strictEqual(res.status, 200);
+    assert(res.data.success, 'Success flag must be true');
+    assert(Array.isArray(res.data.rides), 'Must return array of rides');
+    assert(res.data.rides.length > 0, 'Should have recent rides');
+    const first = res.data.rides[0];
+    assert(first.rideNumber, 'Ride must include rideNumber');
+    assert(first.customer, 'Ride must include customer relation');
+  });
+
   console.log('\n============================================================');
   console.log(`Results: ${passed} Passed, ${failed} Failed`);
   console.log('============================================================\n');

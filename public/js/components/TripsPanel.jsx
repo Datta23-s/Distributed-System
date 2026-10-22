@@ -1,7 +1,7 @@
 // UrbanPulse Dispatch — Right-Side Trips History Panel
 // Matches Reference Layout: Header with Search, Vertically Stacked Trip Cards, Status Badges, Selection state
 
-function TripsPanel({ trips = [], selectedTripId, onSelectTrip, onOpenBooking }) {
+function TripsPanel({ trips = [], selectedTripId, onSelectTrip, onOpenBooking, onViewHistory }) {
   const [searchQuery, setSearchQuery] = React.useState('');
   const [filterTab, setFilterTab] = React.useState('all'); // 'all' | 'active' | 'completed'
 
@@ -92,7 +92,9 @@ function TripsPanel({ trips = [], selectedTripId, onSelectTrip, onOpenBooking })
     const matchQuery =
       (t.rideNumber && t.rideNumber.toLowerCase().includes(q)) ||
       (t.customer?.name && t.customer.name.toLowerCase().includes(q)) ||
-      (t.pickupAddress && t.pickupAddress.toLowerCase().includes(q));
+      (t.pickupAddress && t.pickupAddress.toLowerCase().includes(q)) ||
+      (t.destAddress && t.destAddress.toLowerCase().includes(q)) ||
+      (t.vehicleCategory && t.vehicleCategory.toLowerCase().includes(q));
 
     if (!matchQuery) return false;
     if (filterTab === 'active') return t.status !== 'COMPLETED' && t.status !== 'CANCELLED';
@@ -118,10 +120,18 @@ function TripsPanel({ trips = [], selectedTripId, onSelectTrip, onOpenBooking })
         </svg>
         <input
           type="text"
-          placeholder="Search by ID or name..."
+          placeholder="Search ride ID, name, area..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
         />
+        {searchQuery && (
+          <button
+            onClick={() => setSearchQuery('')}
+            style={{ background: 'transparent', border: 'none', color: 'var(--ap-text-muted)', cursor: 'pointer', padding: 0, fontSize: '0.75rem' }}
+          >
+            ✕
+          </button>
+        )}
       </div>
 
       {/* Filter Chips */}
@@ -150,66 +160,88 @@ function TripsPanel({ trips = [], selectedTripId, onSelectTrip, onOpenBooking })
 
       {/* Scrollable List of Trips */}
       <div className="ap-trips-list">
-        {filteredTrips.map(tripItem => {
-          const isSelected = (selectedTripId === tripItem.id) || (!selectedTripId && tripItem.id === sourceList[0]?.id);
-          const isCompleted = tripItem.status === 'COMPLETED';
-          const isCancelled = tripItem.status === 'CANCELLED';
-          const badgeClass = isCompleted ? 'completed' : isCancelled ? 'cancelled' : 'active';
-          const badgeText = isCompleted ? 'Completed' : isCancelled ? 'Cancelled' : 'Active';
+        {filteredTrips.length === 0 ? (
+          <div style={{ textAlign: 'center', padding: '2.5rem 1rem', color: 'var(--ap-text-muted)', fontSize: '0.8rem' }}>
+            <div style={{ fontSize: '1.6rem', marginBottom: '0.4rem' }}>🔍</div>
+            No trips matching filter
+          </div>
+        ) : (
+          filteredTrips.map(tripItem => {
+            const isSelected = (selectedTripId === tripItem.id) || (!selectedTripId && tripItem.id === sourceList[0]?.id);
+            const isCompleted = tripItem.status === 'COMPLETED';
+            const isCancelled = tripItem.status === 'CANCELLED';
+            const badgeClass = isCompleted ? 'completed' : isCancelled ? 'cancelled' : 'active';
+            const badgeText = isCompleted ? 'Completed' : isCancelled ? 'Cancelled' : 'Active';
 
-          return (
-            <div
-              key={tripItem.id}
-              className={`ap-trip-card ${isSelected ? 'selected' : ''}`}
-              onClick={() => onSelectTrip(tripItem)}
-            >
-              <div className="ap-trip-card-top">
-                <div className="ap-trip-card-user">
-                  <div className="ap-trip-avatar-sm">
-                    {tripItem.customer?.name ? tripItem.customer.name.charAt(0) : 'U'}
-                  </div>
-                  <div>
-                    <div className="ap-trip-user-name">
-                      {tripItem.customer?.name || 'Customer'}
+            return (
+              <div
+                key={tripItem.id}
+                className={`ap-trip-card ${isSelected ? 'selected' : ''}`}
+                onClick={() => onSelectTrip(tripItem)}
+              >
+                <div className="ap-trip-card-top">
+                  <div className="ap-trip-card-user">
+                    <div className="ap-trip-avatar-sm">
+                      {tripItem.customer?.name ? tripItem.customer.name.charAt(0) : 'U'}
                     </div>
-                    <div className="ap-trip-card-time">
-                      {tripItem.rideNumber}
+                    <div>
+                      <div className="ap-trip-user-name">
+                        {tripItem.customer?.name || 'Customer'}
+                      </div>
+                      <div className="ap-trip-card-time">
+                        {tripItem.rideNumber}
+                      </div>
                     </div>
                   </div>
+                  <span className={`ap-badge ${badgeClass}`} style={{ fontSize: '0.65rem', padding: '0.15rem 0.45rem' }}>
+                    {badgeText}
+                  </span>
                 </div>
-                <span className={`ap-badge ${badgeClass}`} style={{ fontSize: '0.65rem', padding: '0.15rem 0.45rem' }}>
-                  {badgeText}
-                </span>
-              </div>
 
-              <div className="ap-trip-card-bottom">
-                <div style={{ fontSize: '0.72rem', color: 'var(--ap-text-muted)' }}>
-                  {tripItem.vehicleCategory || 'ECONOMY'}
-                </div>
-                <div className="ap-trip-card-price">
-                  ₹{tripItem.finalFare || tripItem.estimatedFare || 295}
+                <div className="ap-trip-card-bottom">
+                  <div style={{ fontSize: '0.72rem', color: 'var(--ap-text-muted)' }}>
+                    {tripItem.vehicleCategory || 'ECONOMY'}
+                  </div>
+                  <div className="ap-trip-card-price">
+                    ₹{tripItem.finalFare || tripItem.estimatedFare || 295}
+                  </div>
                 </div>
               </div>
-            </div>
-          );
-        })}
+            );
+          })
+        )}
       </div>
 
-      {/* Bottom Button */}
-      <button
-        className="ap-btn-primary"
-        style={{ width: '100%', justifyContent: 'center' }}
-        onClick={onOpenBooking}
-      >
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <line x1="12" y1="5" x2="12" y2="19"></line>
-          <line x1="5" y1="12" x2="19" y2="12"></line>
-        </svg>
-        Book New Ride
-      </button>
+      {/* Action Buttons */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginTop: 'auto' }}>
+        <button
+          className="ap-btn-primary"
+          style={{ width: '100%', justifyContent: 'center' }}
+          onClick={onOpenBooking}
+        >
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg>
+          Book New Ride
+        </button>
+
+        <button
+          className="ap-btn-secondary"
+          style={{ width: '100%', justifyContent: 'center', fontSize: '0.78rem' }}
+          onClick={() => onViewHistory && onViewHistory()}
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+          </svg>
+          View Full History
+        </button>
+      </div>
     </aside>
   );
 }
 
 window.TripsPanel = TripsPanel;
+
 

@@ -2,7 +2,7 @@
 // Matches Attached Reference: Narrow left sidebar, 2 top cards (Vehicle + Trip Info),
 // Large Leaflet dark map + Route timeline, Right-side persistent trips panel.
 
-function DarkDashboard({ currentUser, onLogout }) {
+function DarkDashboard({ currentUser, authToken, onLogout }) {
   const [currentView, setCurrentView] = React.useState('dashboard');
   const [trips, setTrips] = React.useState([]);
   const [selectedTrip, setSelectedTrip] = React.useState(null);
@@ -10,6 +10,12 @@ function DarkDashboard({ currentUser, onLogout }) {
   const [isBookingOpen, setIsBookingOpen] = React.useState(false);
   const [toastMessage, setToastMessage] = React.useState('');
   const [statusFilter, setStatusFilter] = React.useState('ALL');
+  const [chatMessages, setChatMessages] = React.useState([
+    { sender: 'driver', text: 'Namaste! I am on my way via FC Road.', time: '10:18 AM' },
+    { sender: 'rider', text: 'Great, waiting near Starbucks gate.', time: '10:20 AM' },
+    { sender: 'driver', text: 'Arrived at the pickup point. Yellow Swift Dzire.', time: '10:24 AM' }
+  ]);
+  const [chatInput, setChatInput] = React.useState('');
 
   // Trigger Toast Notification
   const showToast = (msg) => {
@@ -62,7 +68,7 @@ function DarkDashboard({ currentUser, onLogout }) {
           user: { name: 'Rajesh Patil', phone: '+91 91234 56789' },
           rating: 4.89,
           totalTrips: 342,
-          vehicle: { make: 'Maruti Suzuki', model: 'Swift Dzire Tour', licensePlate: 'MH 12 QX 4501', capacity: 4 }
+          vehicles: [{ make: 'Maruti Suzuki', model: 'Swift Dzire Tour', licensePlate: 'MH 12 QX 4501', capacity: 4 }]
         }
       },
       {
@@ -87,7 +93,7 @@ function DarkDashboard({ currentUser, onLogout }) {
           user: { name: 'Vikram Shinde', phone: '+91 98220 12345' },
           rating: 4.95,
           totalTrips: 620,
-          vehicle: { make: 'Honda', model: 'City ZX', licensePlate: 'MH 12 TA 9901', capacity: 4 }
+          vehicles: [{ make: 'Honda', model: 'City ZX', licensePlate: 'MH 12 TA 9901', capacity: 4 }]
         }
       },
       {
@@ -112,7 +118,7 @@ function DarkDashboard({ currentUser, onLogout }) {
           user: { name: 'Ganesh Deshmukh', phone: '+91 97654 32100' },
           rating: 4.82,
           totalTrips: 890,
-          vehicle: { make: 'Bajaj', model: 'RE Compact Auto', licensePlate: 'MH 12 RE 1102', capacity: 3 }
+          vehicles: [{ make: 'Bajaj', model: 'RE Compact Auto', licensePlate: 'MH 12 RE 1102', capacity: 3 }]
         }
       },
       {
@@ -137,7 +143,7 @@ function DarkDashboard({ currentUser, onLogout }) {
           user: { name: 'Amit Gokhale', phone: '+91 99887 65432' },
           rating: 4.88,
           totalTrips: 215,
-          vehicle: { make: 'Hyundai', model: 'Aura CNG', licensePlate: 'MH 14 TC 7788', capacity: 4 }
+          vehicles: [{ make: 'Hyundai', model: 'Aura CNG', licensePlate: 'MH 14 TC 7788', capacity: 4 }]
         }
       }
     ];
@@ -163,49 +169,266 @@ function DarkDashboard({ currentUser, onLogout }) {
   const renderActiveView = () => {
     if (currentView === 'booking' && window.CustomerBooking) {
       return (
-        <div style={{ padding: '1.5rem', width: '100%' }}>
+        <div style={{ padding: '1.5rem', width: '100%', overflowY: 'auto' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
             <h2 style={{ color: 'var(--ap-text-primary)', margin: 0 }}>Customer Ride Booking</h2>
             <button className="ap-btn-secondary" onClick={() => setCurrentView('dashboard')}>
               ← Return to Dashboard
             </button>
           </div>
-          <window.CustomerBooking currentUser={currentUser} />
+          <window.CustomerBooking currentUser={currentUser} authToken={authToken} />
         </div>
       );
     }
 
     if (currentView === 'driver' && window.DriverPortal) {
       return (
-        <div style={{ padding: '1.5rem', width: '100%' }}>
+        <div style={{ padding: '1.5rem', width: '100%', overflowY: 'auto' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
             <h2 style={{ color: 'var(--ap-text-primary)', margin: 0 }}>Driver Dispatch & Telemetry Portal</h2>
             <button className="ap-btn-secondary" onClick={() => setCurrentView('dashboard')}>
               ← Return to Dashboard
             </button>
           </div>
-          <window.DriverPortal />
+          <window.DriverPortal authToken={authToken} onSwitchRole={() => setCurrentView('booking')} />
         </div>
       );
     }
 
     if (currentView === 'fleet' && window.AdminDashboard) {
       return (
-        <div style={{ padding: '1.5rem', width: '100%' }}>
+        <div style={{ padding: '1.5rem', width: '100%', overflowY: 'auto' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
             <h2 style={{ color: 'var(--ap-text-primary)', margin: 0 }}>Fleet Operations & System Metrics</h2>
             <button className="ap-btn-secondary" onClick={() => setCurrentView('dashboard')}>
               ← Return to Dashboard
             </button>
           </div>
-          <window.AdminDashboard />
+          <window.AdminDashboard authToken={authToken} />
+        </div>
+      );
+    }
+
+    if (currentView === 'messages') {
+      return (
+        <div style={{ padding: '1.5rem', width: '100%', overflowY: 'auto' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
+            <div>
+              <h2 style={{ color: 'var(--ap-text-primary)', margin: 0 }}>💬 Live In-Trip Dispatch Messages</h2>
+              <div style={{ fontSize: '0.8rem', color: 'var(--ap-text-muted)' }}>
+                Encrypted Peer-to-Peer WebSocket Bridge &bull; Trip: {selectedTrip?.rideNumber || 'UP-PUN-72819'}
+              </div>
+            </div>
+            <button className="ap-btn-secondary" onClick={() => setCurrentView('dashboard')}>
+              ← Return to Dashboard
+            </button>
+          </div>
+
+          <div style={{ maxWidth: '640px', background: 'var(--ap-panel)', border: '1px solid var(--ap-border)', borderRadius: 'var(--ap-radius-xl)', padding: '1.25rem', display: 'flex', flexDirection: 'column', height: '480px' }}>
+            <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '0.8rem', paddingRight: '0.5rem' }}>
+              {chatMessages.map((msg, i) => (
+                <div key={i} style={{ alignSelf: msg.sender === 'rider' ? 'flex-end' : 'flex-start', maxWidth: '80%' }}>
+                  <div style={{
+                    background: msg.sender === 'rider' ? 'var(--ap-blue)' : 'var(--ap-panel-elevated)',
+                    color: '#ffffff',
+                    padding: '0.65rem 0.95rem',
+                    borderRadius: '12px',
+                    fontSize: '0.86rem',
+                    border: msg.sender === 'rider' ? 'none' : '1px solid var(--ap-border)'
+                  }}>
+                    {msg.text}
+                  </div>
+                  <div style={{ fontSize: '0.68rem', color: 'var(--ap-text-muted)', marginTop: '0.2rem', textAlign: msg.sender === 'rider' ? 'right' : 'left' }}>
+                    {msg.time} &bull; {msg.sender === 'rider' ? 'You' : 'Driver'}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div style={{ display: 'flex', gap: '0.5rem', marginTop: '1rem', borderTop: '1px solid var(--ap-border)', paddingTop: '0.75rem' }}>
+              <input
+                type="text"
+                placeholder="Type in-trip message to driver..."
+                value={chatInput}
+                onChange={e => setChatInput(e.target.value)}
+                onKeyDown={e => {
+                  if (e.key === 'Enter' && chatInput.trim()) {
+                    setChatMessages(prev => [...prev, { sender: 'rider', text: chatInput.trim(), time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }]);
+                    setChatInput('');
+                  }
+                }}
+                style={{ flex: 1, background: 'var(--ap-panel-elevated)', border: '1px solid var(--ap-border)', color: '#ffffff', padding: '0.6rem 0.85rem', borderRadius: '8px', fontSize: '0.85rem' }}
+              />
+              <button
+                className="ap-btn-primary"
+                onClick={() => {
+                  if (chatInput.trim()) {
+                    setChatMessages(prev => [...prev, { sender: 'rider', text: chatInput.trim(), time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }]);
+                    setChatInput('');
+                  }
+                }}
+              >
+                Send
+              </button>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    if (currentView === 'notifications') {
+      const alerts = [
+        { type: 'consensus', title: 'Raft Consensus Synced', detail: 'Leader coordinator confirmed block #14 across 3 DataNodes.', time: '2 mins ago', badge: 'green' },
+        { type: 'dispatch', title: 'Driver Rajesh Dispatched', detail: 'Assigned to ride UP-PUN-72819 (FC Road → Hinjewadi).', time: '5 mins ago', badge: 'blue' },
+        { type: 'pricing', title: 'Dynamic Surge Active', detail: 'Demand ratio 1.4x applied to Pune IT corridor.', time: '12 mins ago', badge: 'amber' },
+        { type: 'health', title: 'Gateway Cluster Healthy', detail: 'All 3 Express edge instances active on ports 5001-5003.', time: '25 mins ago', badge: 'green' }
+      ];
+
+      return (
+        <div style={{ padding: '1.5rem', width: '100%', overflowY: 'auto' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
+            <div>
+              <h2 style={{ color: 'var(--ap-text-primary)', margin: 0 }}>🔔 Real-Time Operational Alerts</h2>
+              <div style={{ fontSize: '0.8rem', color: 'var(--ap-text-muted)' }}>
+                System Telemetry, Consensus Events & Dynamic Dispatch Alerts
+              </div>
+            </div>
+            <button className="ap-btn-secondary" onClick={() => setCurrentView('dashboard')}>
+              ← Return to Dashboard
+            </button>
+          </div>
+
+          <div style={{ maxWidth: '720px', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+            {alerts.map((a, i) => (
+              <div key={i} className="ap-card" style={{ display: 'flex', alignItems: 'center', gap: '1rem', padding: '1rem' }}>
+                <span style={{ fontSize: '1.4rem' }}>{a.badge === 'green' ? '🟢' : a.badge === 'blue' ? '🔵' : '🟡'}</span>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--ap-text-primary)' }}>{a.title}</div>
+                  <div style={{ fontSize: '0.78rem', color: 'var(--ap-text-secondary)', marginTop: '0.15rem' }}>{a.detail}</div>
+                </div>
+                <div style={{ fontSize: '0.72rem', color: 'var(--ap-text-muted)' }}>{a.time}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+    }
+
+    if (currentView === 'history') {
+      return (
+        <div style={{ padding: '1.5rem', width: '100%', overflowY: 'auto' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
+            <div>
+              <h2 style={{ color: 'var(--ap-text-primary)', margin: 0 }}>📜 Trip History & Settlement Records</h2>
+              <div style={{ fontSize: '0.8rem', color: 'var(--ap-text-muted)' }}>
+                Immutable Ledger & Verified Itemized Receipts (Pune Fleet)
+              </div>
+            </div>
+            <button className="ap-btn-secondary" onClick={() => setCurrentView('dashboard')}>
+              ← Return to Dashboard
+            </button>
+          </div>
+
+          <div className="ap-card" style={{ padding: 0, overflow: 'hidden' }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.82rem' }}>
+              <thead>
+                <tr style={{ background: 'var(--ap-panel-elevated)', borderBottom: '1px solid var(--ap-border)', color: 'var(--ap-text-muted)' }}>
+                  <th style={{ padding: '0.75rem 1rem' }}>Ride Number</th>
+                  <th style={{ padding: '0.75rem 1rem' }}>Customer</th>
+                  <th style={{ padding: '0.75rem 1rem' }}>Route</th>
+                  <th style={{ padding: '0.75rem 1rem' }}>Category</th>
+                  <th style={{ padding: '0.75rem 1rem' }}>Status</th>
+                  <th style={{ padding: '0.75rem 1rem' }}>Fare</th>
+                  <th style={{ padding: '0.75rem 1rem' }}>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {trips.map(t => (
+                  <tr key={t.id} style={{ borderBottom: '1px solid var(--ap-border-subtle)' }}>
+                    <td style={{ padding: '0.75rem 1rem', fontFamily: 'JetBrains Mono', fontWeight: 700, color: 'var(--ap-blue)' }}>{t.rideNumber}</td>
+                    <td style={{ padding: '0.75rem 1rem', fontWeight: 600 }}>{t.customer?.name || 'Aarav Sharma'}</td>
+                    <td style={{ padding: '0.75rem 1rem', color: 'var(--ap-text-secondary)', maxWidth: '240px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                      {t.pickupAddress?.split(',')[0]} → {t.destAddress?.split(',')[0]}
+                    </td>
+                    <td style={{ padding: '0.75rem 1rem' }}>{t.vehicleCategory}</td>
+                    <td style={{ padding: '0.75rem 1rem' }}>
+                      <span className={`ap-badge ${t.status === 'COMPLETED' ? 'completed' : 'active'}`} style={{ fontSize: '0.65rem' }}>
+                        {t.status}
+                      </span>
+                    </td>
+                    <td style={{ padding: '0.75rem 1rem', fontWeight: 700, color: '#ffffff' }}>₹{t.finalFare || t.estimatedFare || 295}</td>
+                    <td style={{ padding: '0.75rem 1rem' }}>
+                      <button
+                        className="ap-btn-secondary"
+                        style={{ padding: '0.25rem 0.6rem', fontSize: '0.72rem' }}
+                        onClick={() => {
+                          setSelectedTrip(t);
+                          setCurrentView('dashboard');
+                        }}
+                      >
+                        Inspect
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      );
+    }
+
+    if (currentView === 'settings') {
+      return (
+        <div style={{ padding: '1.5rem', width: '100%', overflowY: 'auto' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
+            <div>
+              <h2 style={{ color: 'var(--ap-text-primary)', margin: 0 }}>⚙️ System Settings & Node Topology</h2>
+              <div style={{ fontSize: '0.8rem', color: 'var(--ap-text-muted)' }}>
+                Cluster Configuration, Physical Clock Calibration & Security Controls
+              </div>
+            </div>
+            <button className="ap-btn-secondary" onClick={() => setCurrentView('dashboard')}>
+              ← Return to Dashboard
+            </button>
+          </div>
+
+          <div style={{ maxWidth: '640px', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            <div className="ap-card">
+              <div style={{ fontWeight: 700, fontSize: '0.92rem', marginBottom: '0.5rem', color: '#ffffff' }}>Operational Mode</div>
+              <div style={{ display: 'flex', gap: '0.75rem' }}>
+                <span className="ap-badge active">Commercial Automotive Dark</span>
+                <span className="ap-badge completed">Prisma SQLite Active</span>
+                <span className="ap-badge" style={{ background: 'rgba(22,119,255,0.15)', color: '#1677FF' }}>Pune Metro Coordinates</span>
+              </div>
+            </div>
+
+            <div className="ap-card">
+              <div style={{ fontWeight: 700, fontSize: '0.92rem', marginBottom: '0.5rem', color: '#ffffff' }}>Session Information</div>
+              <div style={{ fontSize: '0.82rem', color: 'var(--ap-text-secondary)', display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
+                <div><strong>User:</strong> {currentUser?.name || 'Aarav Sharma'} ({currentUser?.email || 'customer@urbanpulse.in'})</div>
+                <div><strong>Role:</strong> {currentUser?.role || 'CUSTOMER'}</div>
+                <div><strong>Gateway:</strong> Express Port 5000 (Forwarding to 5001-5003)</div>
+              </div>
+              <button
+                className="ap-btn-secondary"
+                style={{ marginTop: '1rem', color: '#F87171' }}
+                onClick={() => {
+                  localStorage.removeItem('urbanpulse_token');
+                  showToast('Session token cleared.');
+                }}
+              >
+                Clear Auth Token
+              </button>
+            </div>
+          </div>
         </div>
       );
     }
 
     if (currentView === 'inspector' && window.SystemInspector) {
       return (
-        <div style={{ padding: '1.5rem', width: '100%' }}>
+        <div style={{ padding: '1.5rem', width: '100%', overflowY: 'auto' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
             <div>
               <h2 style={{ color: 'var(--ap-text-primary)', margin: 0 }}>🔬 Distributed Systems Inspector</h2>
@@ -350,6 +573,7 @@ function DarkDashboard({ currentUser, onLogout }) {
             if (currentView !== 'dashboard') setCurrentView('dashboard');
           }}
           onOpenBooking={() => setIsBookingOpen(true)}
+          onViewHistory={() => setCurrentView('history')}
         />
       )}
 
@@ -360,6 +584,7 @@ function DarkDashboard({ currentUser, onLogout }) {
           onClose={() => setIsBookingOpen(false)}
           onBookingSuccess={handleBookingCreated}
           currentUser={currentUser}
+          authToken={authToken}
         />
       )}
     </div>

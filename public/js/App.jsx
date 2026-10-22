@@ -16,6 +16,7 @@ function App() {
         if (d.success) {
           setCurrentUser(d.user);
           setAuthToken(d.token);
+          localStorage.setItem('urbanpulse_token', d.token);
         }
       })
       .catch(() => {});
@@ -30,6 +31,7 @@ function App() {
         onLogout={() => {
           setCurrentUser(null);
           setAuthToken(null);
+          localStorage.removeItem('urbanpulse_token');
         }}
       />
     );

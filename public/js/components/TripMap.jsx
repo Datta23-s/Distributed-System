@@ -20,27 +20,41 @@ function TripMap({ trip, routeGeometry, driverLocation }) {
     name: trip.destAddress || defaultDest.name
   } : defaultDest;
 
-  // Initialize Leaflet Map with CartoDB Dark Matter tiles
+  // Initialize Leaflet Map with CartoDB Dark Matter tiles & safe cleanup
   React.useEffect(() => {
-    if (mapRef.current) return;
     const container = document.getElementById('automotive-leaflet-map');
     if (!container || !window.L) return;
+
+    if (container._leaflet_id) {
+      container._leaflet_id = null;
+    }
 
     const map = window.L.map('automotive-leaflet-map', {
       zoomControl: true,
       attributionControl: false
     }).setView([18.5500, 73.8000], 12);
 
-    // CartoDB Dark Matter dark map tiles
     window.L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
       maxZoom: 19,
       subdomains: 'abcd'
     }).addTo(map);
 
     mapRef.current = map;
+
+    const timer = setTimeout(() => {
+      if (map) map.invalidateSize();
+    }, 250);
+
+    return () => {
+      clearTimeout(timer);
+      if (mapRef.current) {
+        mapRef.current.remove();
+        mapRef.current = null;
+      }
+    };
   }, []);
 
-  // Update Markers & Route
+  // Update Markers & Dynamic Route
   React.useEffect(() => {
     const map = mapRef.current;
     if (!map || !window.L) return;
@@ -63,14 +77,19 @@ function TripMap({ trip, routeGeometry, driverLocation }) {
       })
     }).addTo(map).bindPopup(`<b style="color:#101010">Destination:</b> ${destination.name}`);
 
-    // Draw Route Polyline
-    const coordinates = (routeGeometry && routeGeometry.length > 0) ? routeGeometry : [
-      [pickup.lat, pickup.lng],
-      [18.5450, 73.8200],
-      [18.5600, 73.7800],
-      [18.5750, 73.7550],
-      [destination.lat, destination.lng]
-    ];
+    // Dynamic Waypoints Interpolation between pickup & destination
+    let coordinates = (routeGeometry && routeGeometry.length > 0) ? routeGeometry : null;
+    if (!coordinates) {
+      const dLat = destination.lat - pickup.lat;
+      const dLng = destination.lng - pickup.lng;
+      coordinates = [
+        [pickup.lat, pickup.lng],
+        [pickup.lat + dLat * 0.25 + 0.003, pickup.lng + dLng * 0.25 - 0.002],
+        [pickup.lat + dLat * 0.55 - 0.002, pickup.lng + dLng * 0.55 + 0.004],
+        [pickup.lat + dLat * 0.82 + 0.001, pickup.lng + dLng * 0.82 - 0.001],
+        [destination.lat, destination.lng]
+      ];
+    }
 
     if (markersRef.current.route) markersRef.current.route.remove();
     markersRef.current.route = window.L.polyline(coordinates, {
@@ -81,20 +100,25 @@ function TripMap({ trip, routeGeometry, driverLocation }) {
       lineJoin: 'round'
     }).addTo(map);
 
-    map.fitBounds(markersRef.current.route.getBounds(), { padding: [35, 35] });
+    try {
+      map.fitBounds(markersRef.current.route.getBounds(), { padding: [35, 35] });
+    } catch (e) {}
 
-    // Live Driver Marker
+    // Dynamic Live / Simulated Driver Marker
     const driverLat = driverLocation?.latitude || (pickup.lat + (destination.lat - pickup.lat) * 0.45);
     const driverLng = driverLocation?.longitude || (pickup.lng + (destination.lng - pickup.lng) * 0.45);
+    const driverName = trip?.driver?.user?.name || trip?.driver?.name || 'Rajesh Patil';
+    const vehicleModel = trip?.driver?.vehicle?.model || trip?.driver?.vehicles?.[0]?.model || 'Swift Dzire Tour';
+    const driverIcon = trip?.vehicleCategory === 'AUTO' ? '🛺' : trip?.vehicleCategory === 'BIKE' ? '🏍️' : '🚗';
 
     if (markersRef.current.driver) markersRef.current.driver.remove();
     markersRef.current.driver = window.L.marker([driverLat, driverLng], {
       icon: window.L.divIcon({
         className: 'ap-marker-driver',
-        html: '<div style="background:#1B1B1D;border:2px solid #1677FF;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(22,119,255,0.5);font-size:16px;">🚗</div>'
+        html: `<div style="background:#1B1B1D;border:2px solid #1677FF;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(22,119,255,0.5);font-size:16px;">${driverIcon}</div>`
       })
-    }).addTo(map).bindPopup('<b style="color:#101010">Rajesh Patil (Swift Dzire)</b><br/>Speed: 28 km/h');
-  }, [pickup.lat, pickup.lng, destination.lat, destination.lng, routeGeometry, driverLocation]);
+    }).addTo(map).bindPopup(`<b style="color:#101010">${driverName} (${vehicleModel})</b><br/>Speed: 28 km/h &bull; Heading: NE`);
+  }, [pickup.lat, pickup.lng, destination.lat, destination.lng, routeGeometry, driverLocation, trip?.id]);
 
   return (
     <div className="ap-map-card">
@@ -121,8 +145,8 @@ function TripMap({ trip, routeGeometry, driverLocation }) {
           </svg>
           Speed: <strong>28 km/h</strong>
         </span>
-        <span className="ap-metric-tag">
-          Category: <strong>{trip?.vehicleCategory || 'ECONOMY'}</strong>
+        <span className="ap-metric-tag" style={{ fontSize: '0.72rem', color: driverLocation ? '#36C85B' : '#E6CF00' }}>
+          {driverLocation ? '● Live GPS' : '⚡ Telemetry Mode'}
         </span>
       </div>
 

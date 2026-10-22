@@ -40,9 +40,12 @@ function CustomerBooking({ currentUser, authToken, onAuthRequired }) {
 
   // Initialize Leaflet Map centered on Pune
   React.useEffect(() => {
-    if (mapInstanceRef.current) return;
     const mapContainer = document.getElementById('leaflet-map');
     if (!mapContainer || !window.L) return;
+
+    if (mapContainer._leaflet_id) {
+      mapContainer._leaflet_id = null;
+    }
 
     const map = window.L.map('leaflet-map', {
       zoomControl: true
@@ -53,6 +56,10 @@ function CustomerBooking({ currentUser, authToken, onAuthRequired }) {
     }).addTo(map);
 
     mapInstanceRef.current = map;
+
+    const timer = setTimeout(() => {
+      if (map) map.invalidateSize();
+    }, 250);
 
     // Handle map clicks to set destination
     map.on('click', async (e) => {
@@ -67,6 +74,14 @@ function CustomerBooking({ currentUser, authToken, onAuthRequired }) {
         console.error('Reverse geocode error:', err);
       }
     });
+
+    return () => {
+      clearTimeout(timer);
+      if (mapInstanceRef.current) {
+        mapInstanceRef.current.remove();
+        mapInstanceRef.current = null;
+      }
+    };
   }, []);
 
   // Update Map Markers and Route Polyline

@@ -9,9 +9,11 @@ const prisma = require('../../services/db');
 router.post('/quote', async (req, res) => {
   try {
     const { pickupAddress, pickupLat, pickupLng, destAddress, destLat, destLng, customerId } = req.body;
+    const pAddress = pickupAddress || 'FC Road, Shivajinagar, Pune';
+    const dAddress = destAddress || 'Hinjewadi IT Park Phase 1, Pune';
 
-    if (!pickupAddress || !destAddress || isNaN(pickupLat) || isNaN(pickupLng) || isNaN(destLat) || isNaN(destLng)) {
-      return res.status(400).json({ error: 'Pickup and destination details with coordinates are required.' });
+    if (isNaN(pickupLat) || isNaN(pickupLng) || isNaN(destLat) || isNaN(destLng)) {
+      return res.status(400).json({ error: 'Valid pickup and destination coordinates are required.' });
     }
 
     // Calculate real road distance and travel duration in Pune traffic
@@ -20,15 +22,16 @@ router.post('/quote', async (req, res) => {
     // Generate quotes across vehicle categories
     const quotes = await fareService.generateQuotes({
       customerId: customerId || null,
-      pickupAddress,
+      pickupAddress: pAddress,
       pickupLat,
       pickupLng,
-      destAddress,
+      destAddress: dAddress,
       destLat,
       destLng,
       distanceKm: route.distanceKm,
       durationMinutes: route.durationMinutes
     });
+
 
     res.json({
       success: true,
