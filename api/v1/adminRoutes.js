@@ -3,7 +3,7 @@ const express = require('express');
 const router = express.Router();
 const prisma = require('../../services/db');
 const { jwtAuth } = require('../../middleware/auth');
-const circuitBreakers = require('../../middleware/circuitBreaker');
+const { circuitRegistry } = require('../../middleware/circuitBreaker');
 
 // Admin role verification middleware
 const authenticateAdmin = (req, res, next) => {
@@ -178,7 +178,7 @@ router.put('/tickets/:id', async (req, res) => {
 
 // System Health & Distributed Circuit Breakers
 router.get('/health', (req, res) => {
-  const cbStatus = circuitBreakers.getStatus();
+  const cbStatus = circuitRegistry ? circuitRegistry.getAllStatuses() : {};
   res.json({
     status: 'HEALTHY',
     serviceArea: 'Pune Metro (Maharashtra, India)',
