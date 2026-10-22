@@ -6,7 +6,7 @@
     "replicationFactor": 2,
     "chunks": [
       {
-        "chunkId": "blk_41f1675040",
+        "chunkId": "blk_ab6ebe650a",
         "index": 0,
         "sizeBytes": 512,
         "replicas": [
@@ -16,7 +16,7 @@
         "checksum": "7fbfc5e713b82e52"
       },
       {
-        "chunkId": "blk_c538498f81",
+        "chunkId": "blk_a486b0b638",
         "index": 1,
         "sizeBytes": 491,
         "replicas": [
@@ -26,8 +26,8 @@
         "checksum": "4df32058035e06b9"
       }
     ],
-    "createdAt": 1792039742422,
-    "updatedAt": 1792039742422
+    "createdAt": 1792638672826,
+    "updatedAt": 1792638672826
   },
   "trip_ride-caa96b19.log": {
     "filename": "trip_ride-caa96b19.log",

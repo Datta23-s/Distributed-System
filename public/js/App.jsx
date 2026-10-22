@@ -21,6 +21,20 @@ function App() {
       .catch(() => {});
   }, []);
 
+  // Primary Experience: Dark Automotive Fleet Management & Ride-Hailing Dashboard
+  if (window.DarkDashboard) {
+    return (
+      <window.DarkDashboard
+        currentUser={currentUser}
+        authToken={authToken}
+        onLogout={() => {
+          setCurrentUser(null);
+          setAuthToken(null);
+        }}
+      />
+    );
+  }
+
   const [activeTab, setActiveTab] = React.useState('dispatch'); // dispatch, fleet, reliability, records, inspector
   const [showConceptTags, setShowConceptTags] = React.useState(true);
   const [clockSkewMs, setClockSkewMs] = React.useState(4);
